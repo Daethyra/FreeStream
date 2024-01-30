@@ -177,7 +177,6 @@ qa_chain = RetrievalQAWithSourcesChain.from_llm(
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
     msgs.clear()
     msgs.add_ai_message("How can I help you?")
-    msgs.add_user_message("I have uploaded some files and will ask you a question in a moment. I needed to clarify that I need help in English.")
 
 # Display coversation history window
 avatars = {"human": "user", "ai": "assistant"}
