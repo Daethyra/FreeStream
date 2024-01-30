@@ -26,7 +26,6 @@ st.header(":rainbow[_Use AI as the Voice of Your Documents_]", divider="red")
 st.caption(":violet[_Upload your files and watch the magic happen!_]")
 
 
-
 @st.cache_resource(ttl="1h")  # Cache the resource
 def configure_retriever(uploaded_files):
     """
@@ -186,6 +185,7 @@ def set_llm():
             body="Failed to change model! \nPlease contact the website builder.",
             icon="⚠️",
         )
+
 
 selected_model = st.selectbox(
     label="Choose your chat model:",
