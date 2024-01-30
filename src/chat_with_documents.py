@@ -121,8 +121,8 @@ class PrintRetrievalHandler(BaseCallbackHandler):
 
 st.sidebar.subheader("__User Panel__")
 
-openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
+openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key below", type="password", placeholder="Expected format: 'sk-...'")
+if not openai_api_key.startswith("sk-"):
     st.info("Please add your OpenAI API key to continue.")
     url = "https://platform.openai.com/api-keys"
     st.sidebar.caption("Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys).")
@@ -168,8 +168,10 @@ def set_llm():
     # Show an alert based on what model was selected
     if st.session_state.model_selector == "VertexAI Gemini-Pro":
         st.warning(body="Switched to VertexAI Gemini-Pro!", icon="⚠️")
-    else:
+    elif st.session_state.model_selector == "ChatOpenAI GPT-3.5 Turbo":
         st.warning(body="Switched to ChatGPT 3.5-Turbo!", icon="⚠️")
+    else:
+        st.warning(body="Failed to change model! \nPlease contact the website builder.", icon="⚠️")
 
 selected_model = st.selectbox(
     label="Choose your chat model:",
