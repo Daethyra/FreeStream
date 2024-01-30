@@ -11,7 +11,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_core.callbacks.base import BaseCallbackHandler
 from langchain_core.prompts import PromptTemplate
-from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQAWithSourcesChain
+from langchain.chains import ConversationalRetrievalChain, LLMChain
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
@@ -21,7 +21,9 @@ logger = logging.getLogger(__name__)
 
 # Set up page config
 st.set_page_config(page_title="FreeStream: Chat with Documents", page_icon="🗣️📄")
-st.title("FreeStream: Chat with Documents")
+st.title("FreeStream")
+st.header(":rainbow[_Use AI as the Voice of Your Documents_]", divider="red")
+st.caption(":violet[_Upload your files and watch the magic happen!_]")
 
 
 @st.cache_resource(ttl="1h") # Cache the resource
@@ -117,10 +119,13 @@ class PrintRetrievalHandler(BaseCallbackHandler):
             self.status.markdown(doc.page_content)
         self.status.update(state="complete")
 
+st.sidebar.subheader("__User Panel__")
 
 openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.")
+    url = "https://platform.openai.com/api-keys"
+    st.sidebar.caption("Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys).")
     st.stop()
 
 uploaded_files = st.sidebar.file_uploader(
@@ -155,16 +160,28 @@ model_names = {
     ),
 }
 
+# Define a callback function for when a model is selected
+def set_llm():
+    # Set the model in session state
+    st.session_state.llm = model_names[selected_model]
+    
+    # Show an alert based on what model was selected
+    if st.session_state.model_selector == "VertexAI Gemini-Pro":
+        st.warning(body="Switched to VertexAI Gemini-Pro!", icon="⚠️")
+    else:
+        st.warning(body="Switched to ChatGPT 3.5-Turbo!", icon="⚠️")
+
 selected_model = st.selectbox(
-    "Choose your chat model:",
+    label="Choose your chat model:",
     options=list(model_names.keys()),
     key="model_selector",
+    on_change=set_llm
 )
 
 # Load the selected model dynamically
 llm = model_names[selected_model]
 
-qa_chain = RetrievalQAWithSourcesChain.from_llm(
+qa_chain = ConversationalRetrievalChain.from_llm(
     llm,
     retriever=retriever,
     memory=memory,
@@ -186,12 +203,15 @@ for msg in msgs.messages:
 # Display user input field and enter button
 if user_query := st.chat_input(placeholder="Ask me anything!"):
     st.chat_message("user").write(user_query)
-
+            
     # Display assistant response
     with st.chat_message("assistant"):
+        # Check for the presence of the "messages" key in session state
         if 'messages' not in st.session_state:
             st.session_state.messages = []
+
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
-        response = qa_chain.run(user_query, callbacks=[retrieval_handler, stream_handler])
-        
+        with st.spinner("Generating response..."):
+            response = qa_chain.run(user_query, callbacks=[retrieval_handler, stream_handler])
+        st.success('Success!', icon="✅")
