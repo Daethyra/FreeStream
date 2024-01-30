@@ -4,7 +4,7 @@ import os
 import tempfile
 import streamlit as st
 from langchain_openai import ChatOpenAI
-#from langchain_google_vertexai import VertexAI
+from langchain_google_vertexai import VertexAI
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain.memory import ConversationBufferMemory
@@ -139,20 +139,31 @@ retriever = configure_retriever(uploaded_files)
 msgs = StreamlitChatMessageHistory()
 memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, return_messages=True)
 
-# Setup LLM and QA chain
-llm = VertexAI(
-    model_name="gemini-pro",
-    temperature=1,
-    top_p=0.57,
-    top_k=40,
-    
+# Create a dictionary with keys to chat model classes
+model_names = {
+    "VertexAI Gemini-Pro": VertexAI(
+        model_name="gemini-pro",
+        temperature=1,
+        top_p=0.57,
+        top_k=40,
+    ),
+    "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(
+        model_name="gpt-3.5-turbo-1106",
+        openai_api_key=openai_api_key,
+        temperature=0.7,
+        streaming=True
+    ),
+}
+
+selected_model = st.selectbox(
+    "Choose your chat model:",
+    options=list(model_names.keys()),
+    key="model_selector",
 )
-llm = ChatOpenAI(
-    model_name="gpt-3.5-turbo-1106",
-    openai_api_key=openai_api_key,
-    temperature=0.7,
-    streaming=True
-)
+
+# Load the selected model dynamically
+llm = model_names[selected_model]
+
 qa_chain = RetrievalQAWithSourcesChain.from_llm(
     llm,
     retriever=retriever,
