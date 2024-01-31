@@ -158,12 +158,12 @@ model_names = {
     "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(
         model_name="gpt-3.5-turbo-1106",
         openai_api_key=openai_api_key,
-        temperature=0.7,
+        temperature=0.3,
         streaming=True,
     ),
     "VertexAI Gemini-Pro": VertexAI(
         model_name="gemini-pro",
-        temperature=1,
+        temperature=0,
         top_p=0.57,
         top_k=40,
     ),
@@ -202,10 +202,10 @@ qa_chain = ConversationalRetrievalChain.from_llm(
 )
 
 # if the length of messages is 0, or when the user \
-# clicks the clear button,
-# show a default message from the AI
+# clicks the clear button
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
     msgs.clear()
+    # show a default message from the AI
     msgs.add_ai_message("How can I help you?")
 
 # Display coversation history window
