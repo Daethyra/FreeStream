@@ -197,7 +197,10 @@ selected_model = st.selectbox(
 # Load the selected model dynamically
 llm = model_names[selected_model]
 
+# Create a chain that ties everything together
 qa_chain = ConversationalRetrievalChain.from_llm(
+    # switch to 
+    # create_history_aware_retriever
     llm, retriever=retriever, memory=memory, verbose=True
 )
 
