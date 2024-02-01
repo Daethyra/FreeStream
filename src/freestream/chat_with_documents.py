@@ -5,6 +5,7 @@ import tempfile
 import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain_community.llms import HuggingFaceHub
+from langchain_community.chat_models import ChatHuggingFace
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain.memory import ConversationBufferMemory
@@ -134,6 +135,15 @@ if not openai_api_key.startswith("sk-"):
     )
     #st.stop()
     
+huggingfacehub_api_token = st.sidebar.text_input(
+    "Enter your HuggingFace Hub API Token below:",
+    type="password",
+    #placeholder="Expected format: 'sk-...'",
+)
+if not huggingfacehub_api_token:
+    st.info("Please add your HuggingFace Token to use Zephyr.")
+    #st.sidebar.caption("Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys).")
+    st.stop()
 
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
@@ -153,6 +163,18 @@ memory = ConversationBufferMemory(
     memory_key="chat_history", chat_memory=msgs, return_messages=True
 )
 
+# Initialize Zephyr
+hfllm = HuggingFaceHub(
+            repo_id="HuggingFaceH4/zephyr-7b-beta",
+            task="text-generation",
+            model_kwargs={
+                "max_new_tokens": 512,
+                "top_k": 30,
+                "temperature": 0.1,
+                "repetition_penalty": 1.03,
+            },
+            huggingfacehub_api_token=huggingfacehub_api_token,
+    )
 # Create a dictionary with keys to chat model classes
 model_names = {
     "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(
@@ -161,16 +183,7 @@ model_names = {
         temperature=0.3,
         streaming=True,
     ),
-    "Zephyr-7b-beta": HuggingFaceHub(
-        repo_id="HuggingFaceH4/zephyr-7b-beta",
-        task="text-generation",
-        model_kwargs={
-            "max_new_tokens": 512,
-            "top_k": 30,
-            "temperature": 0.1,
-            "repetition_penalty": 1.03,
-        },
-    )
+    "Zephyr-7b-beta": ChatHuggingFace(llm=hfllm),
 }
 
 
