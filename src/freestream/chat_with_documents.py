@@ -4,7 +4,7 @@ import os
 import tempfile
 import streamlit as st
 from langchain_openai import ChatOpenAI
-from langchain_google_vertexai import VertexAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain.memory import ConversationBufferMemory
@@ -134,6 +134,19 @@ if not openai_api_key.startswith("sk-"):
         "Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys)."
     )
     st.stop()
+    
+google_api_key = st.sidebar.text_input(
+    "Enter your Google API Key below",
+    type="password",
+    #placeholder="Expected format: 'sk-...'",
+)
+if not google_api_key:
+    st.info("Please add your Google API key to continue.")
+    url = "https://console.cloud.google.com/apis/credentials"
+    st.sidebar.caption(
+        "Sign up on [Google's website](https://console.cloud.google.com/) and [click here to get your own API key](https://console.cloud.google.com/apis/credentials)."
+    )
+    st.stop()
 
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
@@ -161,11 +174,13 @@ model_names = {
         temperature=0.3,
         streaming=True,
     ),
-    "VertexAI Gemini-Pro": VertexAI(
-        model_name="gemini-pro",
+    "VertexAI Gemini-Pro": ChatGoogleGenerativeAI(
+        model="gemini-pro",
         temperature=0,
         top_p=0.57,
         top_k=40,
+        google_api_key=google_api_key,
+        convert_system_message_to_human=True,
     ),
 }
 
@@ -228,8 +243,6 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
-        with st.spinner("Generating response..."):
-            response = qa_chain.run(
-                user_query, callbacks=[retrieval_handler, stream_handler]
-            )
-        st.success("Success!", icon="✅")
+        response = qa_chain.run(
+            user_query, callbacks=[retrieval_handler, stream_handler]
+        )
