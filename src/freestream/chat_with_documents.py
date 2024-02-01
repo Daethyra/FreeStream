@@ -4,7 +4,7 @@ import os
 import tempfile
 import streamlit as st
 from langchain_openai import ChatOpenAI
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_community.llms import HuggingFaceHub
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain.memory import ConversationBufferMemory
@@ -128,25 +128,12 @@ openai_api_key = st.sidebar.text_input(
     placeholder="Expected format: 'sk-...'",
 )
 if not openai_api_key.startswith("sk-"):
-    st.info("Please add your OpenAI API key to continue.")
-    url = "https://platform.openai.com/api-keys"
+    st.info("Please add your OpenAI API key to use GPT-3.5 Turbo.")
     st.sidebar.caption(
         "Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys)."
     )
-    st.stop()
+    #st.stop()
     
-google_api_key = st.sidebar.text_input(
-    "Enter your Google API Key below",
-    type="password",
-    #placeholder="Expected format: 'sk-...'",
-)
-if not google_api_key:
-    st.info("Please add your Google API key to continue.")
-    url = "https://console.cloud.google.com/apis/credentials"
-    st.sidebar.caption(
-        "Sign up on [Google's website](https://console.cloud.google.com/) and [click here to get your own API key](https://console.cloud.google.com/apis/credentials)."
-    )
-    st.stop()
 
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
@@ -174,14 +161,16 @@ model_names = {
         temperature=0.3,
         streaming=True,
     ),
-    "VertexAI Gemini-Pro": ChatGoogleGenerativeAI(
-        model="gemini-pro",
-        temperature=0,
-        top_p=0.57,
-        top_k=40,
-        google_api_key=google_api_key,
-        convert_system_message_to_human=True,
-    ),
+    "Zephyr-7b-beta": HuggingFaceHub(
+        repo_id="HuggingFaceH4/zephyr-7b-beta",
+        task="text-generation",
+        model_kwargs={
+            "max_new_tokens": 512,
+            "top_k": 30,
+            "temperature": 0.1,
+            "repetition_penalty": 1.03,
+        },
+    )
 }
 
 
@@ -191,8 +180,8 @@ def set_llm():
     st.session_state.llm = model_names[selected_model]
 
     # Show an alert based on what model was selected
-    if st.session_state.model_selector == "VertexAI Gemini-Pro":
-        st.warning(body="Switched to VertexAI Gemini-Pro!", icon="⚠️")
+    if st.session_state.model_selector == "Zephyr-7b-beta":
+        st.warning(body="Switched to Zephyr-7b-beta!", icon="⚠️")
     elif st.session_state.model_selector == "ChatOpenAI GPT-3.5 Turbo":
         st.warning(body="Switched to ChatGPT 3.5-Turbo!", icon="⚠️")
     else:
