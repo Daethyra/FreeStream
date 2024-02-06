@@ -4,8 +4,6 @@ import os
 import tempfile
 import streamlit as st
 from langchain_openai import ChatOpenAI
-from langchain_community.llms import HuggingFaceHub
-from langchain_community.chat_models import ChatHuggingFace
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain.memory import ConversationBufferMemory
@@ -139,18 +137,6 @@ retriever = configure_retriever(uploaded_files)
 msgs = StreamlitChatMessageHistory()
 memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, return_messages=True)
 
-# Initialize Zephyr
-hfllm = HuggingFaceHub(
-            repo_id="HuggingFaceH4/zephyr-7b-beta",
-            task="text-generation",
-            model_kwargs={
-                "max_new_tokens": 512,
-                "top_k": 30,
-                "temperature": 0.1,
-                "repetition_penalty": 1.03,
-            },
-            huggingfacehub_api_token=st.secrets["huggingface_api_token"],
-    )
 # Create a dictionary with keys to chat model classes
 model_names = {
     "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(
@@ -158,12 +144,6 @@ model_names = {
         openai_api_key=openai_api_key,
         temperature=0.7,
         streaming=True
-    ),
-    "VertexAI Gemini-Pro": VertexAI(
-        model_name="gemini-pro",
-        temperature=1,
-        top_p=0.57,
-        top_k=40,
     ),
 }
 
@@ -173,9 +153,7 @@ def set_llm():
     st.session_state.llm = model_names[selected_model]
     
     # Show an alert based on what model was selected
-    if st.session_state.model_selector == "VertexAI Gemini-Pro":
-        st.warning(body="Switched to VertexAI Gemini-Pro!", icon="⚠️")
-    elif st.session_state.model_selector == "ChatOpenAI GPT-3.5 Turbo":
+    if st.session_state.model_selector == "ChatOpenAI GPT-3.5 Turbo":
         st.warning(body="Switched to ChatGPT 3.5-Turbo!", icon="⚠️")
     else:
         st.warning(body="Failed to change model! \nPlease contact the website builder.", icon="⚠️")
