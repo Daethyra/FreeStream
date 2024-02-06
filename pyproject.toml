@@ -1,4 +1,5 @@
 [tool.poetry]
+
 name = "FreeStream"
 version = "0.1.2"
 description = "Default template for PDM package"
@@ -9,6 +10,7 @@ readme = "README.md"
 license = {text = "GNU AGPL"}
 
 [tool.poetry.dependencies]
+
 python = "^3.11",
 langchain = "^0.1.4",
 streamlit = "^1.30.0",
