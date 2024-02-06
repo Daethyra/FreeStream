@@ -23,9 +23,7 @@ license = {text = "GNU AGPL"}
 [tool.pdm]
 distribution = false
 
-[
-tool.poetry
-]
+[tool.poetry]
 name = ${project.name}
 version = ${project.version}
 description = ${project.description} 
@@ -33,9 +31,7 @@ authors = ${project.authors}
 
 python = ${project.requires-python}
 
-[
-tool.poetry.dependencies
-]
+[tool.poetry.dependencies]
 langchain = ${project.dependencies[0]}  
 streamlit = ${project.dependencies[1]}
 unstructured = {version = ${project.dependencies[2]}, extras = ["all-docs"]} 
@@ -45,7 +41,5 @@ faiss-cpu = ${project.dependencies[5]}
 setuptools = ${project.dependencies[6]}
 langchain-google-genai = ${project.dependencies[7]}
 
-[
-tool.poetry.scripts
-]
+[tool.poetry.scripts]
 freestream = "freestream:main"
