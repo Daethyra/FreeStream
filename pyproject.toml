@@ -12,7 +12,7 @@ python = ">=3.10,<3.12"
 
 langchain = "^0.1.4"
 streamlit = "^1.30.0"
-unstructured = "^0.12.3"
+unstructured = {extras = ["all-docs"], version = "^0.12.3"}
 sentence-transformers = "^2.3.1"
 langchain-openai = "^0.0.5"
 faiss-cpu = "^1.7.4"
