@@ -149,7 +149,7 @@ hfllm = HuggingFaceHub(
                 "temperature": 0.1,
                 "repetition_penalty": 1.03,
             },
-            huggingfacehub_api_token=os.environ["HUGGINGFACEHUB_API_TOKEN"],
+            huggingfacehub_api_token=st.secrets["huggingface_api_token"],
     )
 # Create a dictionary with keys to chat model classes
 model_names = {
