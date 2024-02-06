@@ -23,22 +23,29 @@ license = {text = "GNU AGPL"}
 [tool.pdm]
 distribution = false
 
-[tool.poetry]
-name = "FreeStream"
-version = "0.1.2"
-description = "Default template for PDM package"
-authors = [
-    {name = "Daethyra", email = "109057945+Daethyra@users.noreply.github.com"},
+[
+tool.poetry
 ]
-dependencies = [
-    {python = ">=3.11, <3.12"},
-    "langchain>=0.1.4",
-    "streamlit>=1.30.0",
-    "unstructured[all-docs]>=0.12.3",
-    "sentence-transformers>=2.3.1",
-    "langchain-openai>=0.0.5",
-    "faiss-cpu>=1.7.4",
-    "langchain-google-genai>=0.0.6",
+name = ${project.name}
+version = ${project.version}
+description = ${project.description} 
+authors = ${project.authors}
+
+python = ${project.requires-python}
+
+[
+tool.poetry.dependencies
 ]
-readme = "README.md"
-license = "GNU AGPL"
+langchain = ${project.dependencies[0]}  
+streamlit = ${project.dependencies[1]}
+unstructured = {version = ${project.dependencies[2]}, extras = ["all-docs"]} 
+sentence-transformers = ${project.dependencies[3]}
+langchain-openai = ${project.dependencies[4]}  
+faiss-cpu = ${project.dependencies[5]}
+setuptools = ${project.dependencies[6]}
+langchain-google-genai = ${project.dependencies[7]}
+
+[
+tool.poetry.scripts
+]
+freestream = "freestream:main"
