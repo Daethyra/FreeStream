@@ -12,7 +12,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_core.callbacks.base import BaseCallbackHandler
 from langchain_core.prompts import PromptTemplate
-from langchain.chains import ConversationalRetrievalChain, LLMChain
+from langchain.chains import ConversationalRetrievalChain
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
@@ -52,19 +52,13 @@ def configure_retriever(uploaded_files):
     # Split documents
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=75)
     chunks = text_splitter.split_documents(docs)
-    # log
-    logger.info("Split %s documents into %s chunks", len(docs), len(chunks))
 
     # Create embeddings and store in vectordb
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectordb = FAISS.from_documents(chunks, embeddings)
-    # log
-    logger.info("Created vectordb")
 
     # Define retriever
     retriever = vectordb.as_retriever(search_type="mmr", search_kwargs={"k": 10, "fetch_k": 15})
-    # log
-    logger.info("Created retriever")
     
     return retriever
 
@@ -159,17 +153,17 @@ hfllm = HuggingFaceHub(
     )
 # Create a dictionary with keys to chat model classes
 model_names = {
-    "VertexAI Gemini-Pro": VertexAI(
-        model_name="gemini-pro",
-        temperature=1,
-        top_p=0.57,
-        top_k=40,
-    ),
     "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(
         model_name="gpt-3.5-turbo-1106",
         openai_api_key=openai_api_key,
         temperature=0.7,
         streaming=True
+    ),
+    "VertexAI Gemini-Pro": VertexAI(
+        model_name="gemini-pro",
+        temperature=1,
+        top_p=0.57,
+        top_k=40,
     ),
 }
 
@@ -179,8 +173,8 @@ def set_llm():
     st.session_state.llm = model_names[selected_model]
     
     # Show an alert based on what model was selected
-    if st.session_state.model_selector == "Zephyr-7b-beta":
-        st.warning(body="Switched to Zephyr-7b-beta!", icon="⚠️")
+    if st.session_state.model_selector == "VertexAI Gemini-Pro":
+        st.warning(body="Switched to VertexAI Gemini-Pro!", icon="⚠️")
     elif st.session_state.model_selector == "ChatOpenAI GPT-3.5 Turbo":
         st.warning(body="Switched to ChatGPT 3.5-Turbo!", icon="⚠️")
     else:
