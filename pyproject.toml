@@ -8,7 +8,7 @@ readme = "README.md"
 license = "GNU AGPL"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.12"
+python = ">=3.10,<3.12"
 
 langchain = "^0.1.4"
 streamlit = "^1.30.0"
