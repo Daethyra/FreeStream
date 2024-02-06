@@ -3,9 +3,7 @@
 name = "FreeStream"
 version = "0.1.2"
 description = "Default template for PDM package"
-authors = [
-    {name = "Daethyra", email = "109057945+Daethyra@users.noreply.github.com"},
-]
+authors = ["Daethyra <109057945+Daethyra@users.noreply.github.com>"]
 readme = "README.md"
 license = "GNU AGPL"
 
