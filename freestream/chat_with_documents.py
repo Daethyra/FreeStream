@@ -27,14 +27,14 @@ st.header(":rainbow[_Use AI as the Voice of Your Documents_]", divider="red")
 st.caption(":violet[_Upload your files and watch the magic happen!_]")
 
 
-@st.cache_resource(ttl="1h")  # Cache the resource
+@st.cache_resource(ttl="1h") # Cache the resource
 def configure_retriever(uploaded_files):
     """
     Configure retriever using uploaded files and return a retriever object.
-
+    
     Args:
     - uploaded_files: List of uploaded files
-
+    
     Returns:
     - retriever: Retriever object
     """
@@ -58,19 +58,19 @@ def configure_retriever(uploaded_files):
     # Create embeddings and store in vectordb
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectordb = FAISS.from_documents(chunks, embeddings)
+    # log
+    logger.info("Created vectordb")
 
     # Define retriever
-    retriever = vectordb.as_retriever(
-        search_type="mmr", search_kwargs={"k": 10, "fetch_k": 15}
-    )
-
+    retriever = vectordb.as_retriever(search_type="mmr", search_kwargs={"k": 10, "fetch_k": 15})
+    # log
+    logger.info("Created retriever")
+    
     return retriever
 
 
 class StreamHandler(BaseCallbackHandler):
-    def __init__(
-        self, container: st.delta_generator.DeltaGenerator, initial_text: str = ""
-    ):
+    def __init__(self, container: st.delta_generator.DeltaGenerator, initial_text: str = ""):
         self.container = container
         self.text = initial_text
         self.run_id_ignore_token = None
@@ -94,7 +94,7 @@ class PrintRetrievalHandler(BaseCallbackHandler):
     def on_retriever_start(self, serialized: dict, query: str, **kwargs):
         """
         on_retriever_start function updates status and writes a question and context retrieval label.
-
+        
         Args:
             serialized (dict): The serialized data.
             query (str): The query string.
@@ -120,36 +120,20 @@ class PrintRetrievalHandler(BaseCallbackHandler):
             self.status.markdown(doc.page_content)
         self.status.update(state="complete")
 
+st.sidebar.subheader("__User Panel__")
 
-st.sidebar.subheader("User Panel")
-
-openai_api_key = st.sidebar.text_input(
-    "Enter your OpenAI API Key below",
-    type="password",
-    placeholder="Expected format: 'sk-...'",
-)
+openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key below", type="password", placeholder="Expected format: 'sk-...'")
 if not openai_api_key.startswith("sk-"):
-    st.info("Please add your OpenAI API key to use GPT-3.5 Turbo.")
-    st.sidebar.caption(
-        "Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys)."
-    )
-    #st.stop()
-    
-huggingfacehub_api_token = st.sidebar.text_input(
-    "Enter your HuggingFace Hub API Token below:",
-    type="password",
-    #placeholder="Expected format: 'sk-...'",
-)
-if not huggingfacehub_api_token:
-    st.info("Please add your HuggingFace Token to use Zephyr.")
-    #st.sidebar.caption("Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys).")
+    st.info("Please add your OpenAI API key to continue.")
+    url = "https://platform.openai.com/api-keys"
+    st.sidebar.caption("Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys).")
     st.stop()
 
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
     type=["pdf", "doc", "docx", "txt"],
     help="Types supported: pdf, doc, docx, txt",
-    accept_multiple_files=True,
+    accept_multiple_files=True
 )
 if not uploaded_files:
     st.info("Please upload documents to continue.")
@@ -159,9 +143,7 @@ retriever = configure_retriever(uploaded_files)
 
 # Setup memory for contextual conversation
 msgs = StreamlitChatMessageHistory()
-memory = ConversationBufferMemory(
-    memory_key="chat_history", chat_memory=msgs, return_messages=True
-)
+memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, return_messages=True)
 
 # Initialize Zephyr
 hfllm = HuggingFaceHub(
@@ -177,38 +159,38 @@ hfllm = HuggingFaceHub(
     )
 # Create a dictionary with keys to chat model classes
 model_names = {
+    "VertexAI Gemini-Pro": VertexAI(
+        model_name="gemini-pro",
+        temperature=1,
+        top_p=0.57,
+        top_k=40,
+    ),
     "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(
         model_name="gpt-3.5-turbo-1106",
         openai_api_key=openai_api_key,
-        temperature=0.3,
-        streaming=True,
+        temperature=0.7,
+        streaming=True
     ),
-    "Zephyr-7b-beta": ChatHuggingFace(llm=hfllm),
 }
-
 
 # Define a callback function for when a model is selected
 def set_llm():
     # Set the model in session state
     st.session_state.llm = model_names[selected_model]
-
+    
     # Show an alert based on what model was selected
     if st.session_state.model_selector == "Zephyr-7b-beta":
         st.warning(body="Switched to Zephyr-7b-beta!", icon="⚠️")
     elif st.session_state.model_selector == "ChatOpenAI GPT-3.5 Turbo":
         st.warning(body="Switched to ChatGPT 3.5-Turbo!", icon="⚠️")
     else:
-        st.warning(
-            body="Failed to change model! \nPlease contact the website builder.",
-            icon="⚠️",
-        )
-
+        st.warning(body="Failed to change model! \nPlease contact the website builder.", icon="⚠️")
 
 selected_model = st.selectbox(
     label="Choose your chat model:",
     options=list(model_names.keys()),
     key="model_selector",
-    on_change=set_llm,
+    on_change=set_llm
 )
 
 # Load the selected model dynamically
@@ -216,13 +198,15 @@ llm = model_names[selected_model]
 
 # Create a chain that ties everything together
 qa_chain = ConversationalRetrievalChain.from_llm(
-    # switch to 
-    # create_history_aware_retriever
-    llm, retriever=retriever, memory=memory, verbose=True
+    llm,
+    retriever=retriever,
+    memory=memory,
+    verbose=True
 )
 
 # if the length of messages is 0, or when the user \
-# clicks the clear button
+    # clicks the clear button,
+    # show a default message from the AI
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
     msgs.clear()
     # show a default message from the AI
@@ -236,15 +220,15 @@ for msg in msgs.messages:
 # Display user input field and enter button
 if user_query := st.chat_input(placeholder="Ask me anything!"):
     st.chat_message("user").write(user_query)
-
+            
     # Display assistant response
     with st.chat_message("assistant"):
         # Check for the presence of the "messages" key in session state
-        if "messages" not in st.session_state:
+        if 'messages' not in st.session_state:
             st.session_state.messages = []
 
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
-        response = qa_chain.run(
-            user_query, callbacks=[retrieval_handler, stream_handler]
-        )
+        with st.spinner("Generating response..."):
+            response = qa_chain.run(user_query, callbacks=[retrieval_handler, stream_handler])
+        st.success('Success!', icon="✅")
