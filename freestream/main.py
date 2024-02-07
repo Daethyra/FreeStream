@@ -20,10 +20,10 @@ logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
 
 # Set up page config
-st.set_page_config(page_title="FreeStream: Chat with Documents", page_icon="🗣️📄")
+st.set_page_config(page_title="FreeStream: Free AI Tooling", page_icon="🗣️📄")
 st.title("FreeStream")
-st.header(":rainbow[_Use AI as the Voice of Your Documents_]", divider="red")
-st.caption(":violet[_An effort to lower the bar of entry to try AI tools and provide easy access to a chatbot that can answer documents without requiring an account._]")
+st.header(":rainbow[_Empowering Everyone with Advanced AI Tools_]", divider="red")
+st.caption(":violet[_Democratizing access to advanced AI tools like GPT-3.5-turbo, offering a free service to simplify document retrieval and generation._]")
 
 
 @st.cache_resource(ttl="1h") # Cache the resource
