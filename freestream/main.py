@@ -3,6 +3,7 @@ import sys
 import os
 import tempfile
 import streamlit as st
+import torch
 from langchain_openai import ChatOpenAI
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import UnstructuredFileLoader
@@ -52,7 +53,9 @@ def configure_retriever(uploaded_files):
     chunks = text_splitter.split_documents(docs)
 
     # Create embeddings and store in vectordb
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        # quickly create a GPU detection line for model_kwargs
+    model_kwargs = {"device": "cuda" if torch.cuda.is_available() else "cpu"}
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2", model_kwargs=model_kwargs)
     vectordb = FAISS.from_documents(chunks, embeddings)
 
     # Define retriever
@@ -114,12 +117,7 @@ class PrintRetrievalHandler(BaseCallbackHandler):
 
 st.sidebar.subheader("__User Panel__")
 
-openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key below", type="password", placeholder="Expected format: 'sk-...'")
-if not openai_api_key.startswith("sk-"):
-    st.info("Please add your OpenAI API key to continue.")
-    url = "https://platform.openai.com/api-keys"
-    st.sidebar.caption("Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys).")
-    st.stop()
+openai_api_key = st.secrets.OPENAI.openai_api_key
 
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
