@@ -1,1 +1,0 @@
-web: streamlit run ./src/freestream/chat_with_documents.py

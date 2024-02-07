@@ -2,7 +2,7 @@
 
 name = "FreeStream"
 version = "1.0.1"
-description = "Default template for PDM package"
+description = "An effort to give easy access to generative AI."
 authors = ["Daethyra <109057945+Daethyra@users.noreply.github.com>"]
 readme = "README.md"
 license = "GNU AGPL"
