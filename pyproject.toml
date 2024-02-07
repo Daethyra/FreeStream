@@ -1,7 +1,7 @@
 [project]
 name = "FreeStream"
-version = "0.1.2"
-description = "Default template for PDM package"
+version = "1.0.0"
+description = "An effort to give easy access to generative AI."
 authors = [
     {name = "Daethyra", email = "109057945+Daethyra@users.noreply.github.com"},
 ]
