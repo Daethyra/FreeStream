@@ -1,7 +1,7 @@
 [tool.poetry]
 
 name = "FreeStream"
-version = "0.1.2"
+version = "1.0.0"
 description = "Default template for PDM package"
 authors = ["Daethyra <109057945+Daethyra@users.noreply.github.com>"]
 readme = "README.md"
