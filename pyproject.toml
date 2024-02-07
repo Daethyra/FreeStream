@@ -1,7 +1,7 @@
 [tool.poetry]
 
 name = "FreeStream"
-version = "1.0.0"
+version = "1.0.1"
 description = "Default template for PDM package"
 authors = ["Daethyra <109057945+Daethyra@users.noreply.github.com>"]
 readme = "README.md"
@@ -17,7 +17,7 @@ sentence-transformers = "^2.3.1"
 langchain-openai = "^0.0.5"
 faiss-cpu = "^1.7.4"
 setuptools = "^69.0.3"
-langchain-google-genai = "^0.0.6"
+torch = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
