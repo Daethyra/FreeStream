@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 st.set_page_config(page_title="FreeStream: Chat with Documents", page_icon="🗣️📄")
 st.title("FreeStream")
 st.header(":rainbow[_Use AI as the Voice of Your Documents_]", divider="red")
-st.caption(":violet[_Upload your files and watch the magic happen!_]")
+st.caption(":violet[_This is a project to provide free access to generative AI over documents._]")
 
 
 @st.cache_resource(ttl="1h") # Cache the resource
