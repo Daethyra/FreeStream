@@ -22,29 +22,3 @@ license = {text = "GNU AGPL"}
 
 [tool.pdm]
 distribution = false
-
-[
-tool.poetry
-]
-name = "FreeStream"
-version = "0.1.2"
-description = "Default template for PDM package"
-authors = ["Daethyra <109057945+Daethyra@users.noreply.github.com>"]
-
-[
-tool.poetry.dependencies
-]
-python = ">=3.11,<3.12"
-langchain = ">=0.1.4"
-streamlit = ">=1.0.0,<2.0.0"
-unstructured = {version = ">=0.10.0,<0.13.0", extras = ["all-docs"]}
-sentence-transformers = ">=2.0.0,<3.0.0" 
-langchain-openai = ">=0.0.5"
-faiss-cpu = ">=1.7.0,<1.8.0"
-setuptools = ">=50.0.0"
-langchain-google-genai = ">=0.0.6"
-
-[
-tool.poetry.scripts
-]
-freestream = "freestream:main"
