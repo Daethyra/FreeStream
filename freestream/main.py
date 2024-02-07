@@ -114,12 +114,7 @@ class PrintRetrievalHandler(BaseCallbackHandler):
 
 st.sidebar.subheader("__User Panel__")
 
-openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key below", type="password", placeholder="Expected format: 'sk-...'")
-if not openai_api_key.startswith("sk-"):
-    st.info("Please add your OpenAI API key to continue.")
-    url = "https://platform.openai.com/api-keys"
-    st.sidebar.caption("Sign up on [OpenAI's website](https://platform.openai.com/signup) and [click here to get your own API key](https://platform.openai.com/account/api-keys).")
-    st.stop()
+openai_api_key = st.secrets.OPENAI.openai_api_key
 
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
