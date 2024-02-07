@@ -3,6 +3,7 @@ import sys
 import os
 import tempfile
 import streamlit as st
+import torch
 from langchain_openai import ChatOpenAI
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import UnstructuredFileLoader
@@ -52,7 +53,9 @@ def configure_retriever(uploaded_files):
     chunks = text_splitter.split_documents(docs)
 
     # Create embeddings and store in vectordb
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        # quickly create a GPU detection line for model_kwargs
+    model_kwargs = {"device": "cuda" if torch.cuda.is_available() else "cpu"}
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2", model_kwargs=model_kwargs)
     vectordb = FAISS.from_documents(chunks, embeddings)
 
     # Define retriever
