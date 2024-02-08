@@ -65,7 +65,7 @@ def configure_retriever(uploaded_files):
     vectordb = FAISS.from_documents(chunks, embeddings)
 
     # Define retriever
-    retriever = vectordb.as_retriever(search_type="mmr", search_kwargs={"k": 10, "fetch_k": 15})
+    retriever = vectordb.as_retriever(search_type="mmr", search_kwargs={"k": 3, "fetch_k": 7})
     
     return retriever
 
