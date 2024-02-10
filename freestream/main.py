@@ -123,8 +123,6 @@ class PrintRetrievalHandler(BaseCallbackHandler):
 
 st.sidebar.subheader("__User Panel__")
 
-openai_api_key = st.secrets.OPENAI.openai_api_key
-
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
     type=["pdf", "doc", "docx", "txt"],
@@ -145,7 +143,7 @@ memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, r
 model_names = {
     "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(
         model_name="gpt-3.5-turbo-0125",
-        openai_api_key=openai_api_key,
+        openai_api_key=st.secrets.OPENAI.openai_api_key,
         temperature=0.7,
         streaming=True
     ),
