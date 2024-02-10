@@ -144,7 +144,7 @@ memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, r
 # Create a dictionary with keys to chat model classes
 model_names = {
     "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(
-        model_name="gpt-3.5-turbo-1106",
+        model_name="gpt-3.5-turbo-0125",
         openai_api_key=openai_api_key,
         temperature=0.7,
         streaming=True
