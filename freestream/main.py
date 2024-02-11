@@ -15,8 +15,8 @@ os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 # Set up page config
 st.set_page_config(page_title="FreeStream: Free AI Tooling", page_icon="🗣️📄")
 st.title("FreeStream")
-st.header(":rainbow[_Empowering Everyone with Advanced AI Tools_]", divider="red")
-st.caption(":violet[_Democratizing access to advanced AI tools like GPT-3.5-turbo, offering a free service to simplify document retrieval and generation._]")
+st.header(":green[_Welcome_]", divider="red")
+st.caption(":violet[_Democratizing access to advanced AI tools_]")
 st.sidebar.subheader("__User Panel__")
 
 # Add a way to upload files
