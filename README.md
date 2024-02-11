@@ -3,9 +3,11 @@
 Providing AI solutions for everyday people
 
 ***TLDR***:
-- Unlimited file upload per user-session (deletes data on exiting the web page)
 - Free access to generative AI models
-- Leverage the latest techniques for accurate, helpful text generation without managing the underlying prompt-engineering
+- Unlimited file uploads (per user-session; deletes data on exiting the web page)
+- Leverage state of the art RAG techniques for accurate, helpful text generation without managing the underlying prompt-engineering
+- No AI model training on your data
+- No sign-up or login required
 
 ## Table of Contents
 
@@ -18,7 +20,7 @@ Providing AI solutions for everyday people
 
 ## Quickstart
 
-As of version 1.0.0, a test version is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Link")
+As of version 1.0.1, a test version is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Version 2.0.0")
 
 ### Installation
 
@@ -51,11 +53,14 @@ The original inspiration for this project was to create a chatbot for friends in
 
 ### What can FreeStream do for me, currently?
 
-Right now, FreeStream is basically a chatbot powered by GPT-3.5-Turbo that requires that you upload a file(s) before you interact with it. You're taking advantage of prompt-engineering logical flow that helps ensure the best results are retrieved from your uploaded files.
+Right now, FreeStream is basically a chatbot powered by GPT-3.5-Turbo that requires that you upload a file(s) before you interact with it. You'll take advantage of state of the art prompt-engineering logical flow that helps ensure the best results are retrieved from your uploaded files.
 
 #### Things worth noting:
 - Currently only supports the GPT-3.5-Turbo model
-- The implemented `qa_chain` forces answers to be based on the context, and the context only. This makes it difficult to interact with the chat history in a nuanced, meaningful way.
+- The implemented RAG chain forces answers to be based on the context, and the context only. This makes it difficult to interact with the chat history in a nuanced, meaningful way.
+
+## Roadmapping Out Loud
+The current focus is to overhaul the retrieval prompting by removing `ConversationalRetrievalChain`, as it hard codes the logical flow of prompting, retrieving, prompting, and responding to the user, and it also makes it difficult to get nuanced answers. The fix for this is to implement LangGraph so that I have control over "nodes" and "edges", which basically means I'll have absolute control over how the AI makes its decisions, drastically enhancing the generated responses' helpfulness and pertinence to the query.
 
 ## Future Functionality Plans
 
