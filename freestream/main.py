@@ -58,9 +58,6 @@ selected_model = st.selectbox(
 llm = model_names[selected_model]  # Get the selected model \
     # from the `model_names` dictionary
 
-# Load the selected model dynamically
-llm = model_names[selected_model]
-
 # Create a chain that ties everything together
 qa_chain = ConversationalRetrievalChain.from_llm(
     llm,
