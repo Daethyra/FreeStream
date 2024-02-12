@@ -3,6 +3,7 @@
 Providing AI solutions for everyday people
 
 ***TLDR***:
+- A general purpose chatbot assistant
 - Free access to generative AI models
 - Unlimited file uploads (per user-session; deletes data on exiting the web page)
 - Leverage state of the art RAG techniques for accurate, helpful text generation without managing the underlying prompt-engineering
