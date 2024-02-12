@@ -21,7 +21,7 @@ os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 st.set_page_config(page_title="FreeStream: Free AI Tooling", page_icon="🗣️📄")
 st.title("FreeStream")
 st.header(":green[_Welcome_]", divider="red")
-st.caption(":violet[_Democratizing access to advanced AI tools_]")
+st.caption(":violet[_General purpose chatbot assistant_]")
 st.sidebar.subheader("__User Panel__")
 
 # Add a way to upload files
