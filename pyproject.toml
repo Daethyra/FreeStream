@@ -21,7 +21,7 @@ torch = "^2.2.0"
 opencv-python-headless = "^4.9.0.80"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
+black = "^24.2.0"
 
 [build-system]
 requires = ["poetry-core"]
