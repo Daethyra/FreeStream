@@ -4,6 +4,9 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain.chains import ConversationalRetrievalChain
+from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain.chains import LLMMathChain
+from langchain import hub
 from utility_funcs import (
     configure_retriever,
     StreamHandler,
@@ -13,9 +16,12 @@ from utility_funcs import (
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = "FreeStream-v2"
+os.environ["LANGCHAIN_PROJECT"] = "FreeStream-v2.1"
 os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
 os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
+
+# Load tool API keys
+os.environ["TAVILY_API_KEY"] = st.secrets.TAVILY.TAVILY_API_KEY
 
 # Set up page config
 st.set_page_config(page_title="FreeStream: Free AI Tooling", page_icon="🗣️📄")
@@ -65,6 +71,33 @@ selected_model = st.selectbox(
 llm = model_names[
     selected_model
 ]  # Get the selected model from the `model_names` dictionary
+
+# Import custom prompt from Hub
+STARTER_PROMPT = hub.pull("daethyra/freestream")
+
+# Define few-shot prompt examples to guide *generated* search queries
+tav_description = (
+    """
+    A search engine optimized for comprehensive, accurate, and trusted results. Useful for when you need to answer questions about current events. Input should be a search query.
+
+    Examples where curly braces indicate the need to inject context from the chat history to create an effective search query:
+    | User Input | Search Query |
+    | --- | --- |
+    | What is this book about? | What is {book_title} about? |
+    | Who is running for President this year? | Current presidential candidates |
+    | Who won the Super Bowl? | Who won the Super Bowl in {year}? |
+    """
+)
+
+# Define tools for the agent
+llm_math = LLMMathChain.from_llm(llm=llm, verbose=True)
+tools = [
+    TavilySearchResults(
+        description = tav_description,
+        max_results = 4
+    ),
+    llm_math,
+]
 
 # Create a chain that ties everything together
 qa_chain = ConversationalRetrievalChain.from_llm(
