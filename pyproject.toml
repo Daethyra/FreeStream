@@ -1,8 +1,8 @@
 [tool.poetry]
 
 name = "FreeStream"
-version = "2.0.1"
-description = "An effort to give easy access to generative AI."
+version = "2.1.0"
+description = "Free general purpose generative AI tools."
 authors = ["Daethyra <109057945+Daethyra@users.noreply.github.com>"]
 readme = "README.md"
 license = "GNU AGPL"
@@ -19,6 +19,9 @@ faiss-cpu = "^1.7.4"
 setuptools = "^69.1.0"
 torch = "^2.2.0"
 opencv-python-headless = "^4.9.0.80"
+numexpr = "^2.9.0"
+langchainhub = "^0.1.14"
+tavily-python = "^0.3.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
