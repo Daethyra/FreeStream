@@ -14,7 +14,7 @@ langchain = "^0.1.6"
 streamlit = "^1.31.1"
 unstructured = {extras = ["all-docs"], version = "^0.12.4"}
 sentence-transformers = "^2.3.1"
-langchain-openai = "^0.0.5"
+langchain-openai = "^0.0.6"
 faiss-cpu = "^1.7.4"
 setuptools = "^69.1.0"
 torch = "^2.2.0"
