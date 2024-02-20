@@ -37,8 +37,7 @@ uploaded_files = st.sidebar.file_uploader(
     help="Types supported: pdf, doc, docx, txt",
     accept_multiple_files=True,
 )
-#if uploaded_files == True
- #   retriever = configure_retriever(uploaded_files)
+
 if not uploaded_files:
     st.info("Please upload documents to continue.")
     st.stop()
