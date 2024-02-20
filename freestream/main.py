@@ -4,11 +4,13 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain.agents import AgentExecutor, Tool, create_react_agent
+from langchain.tools import StructuredTool
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.chains import LLMMathChain
 from langchain import hub
 from utility_funcs import (
     configure_retriever,
+    VectorStoreRetrievalTool,
     StreamHandler,
     PrintRetrievalHandler,
     set_llm,
@@ -37,11 +39,11 @@ uploaded_files = st.sidebar.file_uploader(
     help="Types supported: pdf, doc, docx, txt",
     accept_multiple_files=True,
 )
+if uploaded_files:
+    retriever = configure_retriever(uploaded_files)
 #if not uploaded_files:
 #    st.info("Please upload documents to continue.")
 #    st.stop()
-
-retriever = configure_retriever(uploaded_files)
 
 # Setup memory for contextual conversation
 msgs = StreamlitChatMessageHistory()
@@ -108,8 +110,8 @@ tools = [
         description="Solves maths problems. Translate a math problem into an expression that can be executed using Python\'s numexpr library. Use the output of running this code to help yourself answer the user\'s foremost concern."
     ),
     Tool(
-        name="Uploaded knowledge Database",
-        func=retriever,
+        name="VectorStore",
+        func=VectorStoreRetrievalTool._run,
         description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database."
     ),
 ]
