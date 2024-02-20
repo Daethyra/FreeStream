@@ -64,6 +64,16 @@ def configure_retriever(uploaded_files):
     return retriever
 
 
+# Create a class to turn the retriever function into a tool for the Agent
+class VectorStoreRetrievalTool(StructuredTool):
+    name = "VectorStore"
+    description = "Creates a FAISS vector store for document retrieval"
+
+    def _run(self, uploaded_files: list) -> FAISS.as_retriever():
+        """Wraps the configure_retriever function for integration with LangChain."""
+        return configure_retriever(uploaded_files)
+
+
 class StreamHandler(BaseCallbackHandler):
     """
     A callback handler for streaming the model's output to the user interface.
