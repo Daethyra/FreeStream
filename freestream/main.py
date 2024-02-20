@@ -3,6 +3,7 @@ import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain.agents import AgentExecutor, Tool, create_react_agent
 from langchain.tools import StructuredTool
 from langchain_community.tools.tavily_search import TavilySearchResults
@@ -10,9 +11,6 @@ from langchain.chains import LLMMathChain
 from langchain import hub
 from utility_funcs import (
     configure_retriever,
-    VectorStoreRetrievalTool,
-    StreamHandler,
-    PrintRetrievalHandler,
     set_llm,
 )
 
@@ -39,17 +37,14 @@ uploaded_files = st.sidebar.file_uploader(
     help="Types supported: pdf, doc, docx, txt",
     accept_multiple_files=True,
 )
-if uploaded_files:
-    retriever = configure_retriever(uploaded_files)
-#if not uploaded_files:
-#    st.info("Please upload documents to continue.")
-#    st.stop()
+#if uploaded_files == True
+ #   retriever = configure_retriever(uploaded_files)
+if not uploaded_files:
+    st.info("Please upload documents to continue.")
+    st.stop()
 
 # Setup memory for contextual conversation
-msgs = StreamlitChatMessageHistory()
-memory = ConversationBufferMemory(
-    memory_key="chat_history", chat_memory=msgs, return_messages=True
-)
+msgs = StreamlitChatMessageHistory(key="chat_history")
 
 # Create a dictionary with keys to chat model classes
 model_names = {
@@ -116,9 +111,12 @@ tools = [
     ),
 ]
 
-# Initialize agent
+# Initialize Callbacks for Agent
+st_callback = StreamlitCallbackHandler(st.container())
+### Initialize agent ###
 react_agent = create_react_agent(llm, tools, hub.pull("hwchase17/react"))
 agent_executor = AgentExecutor(agent=react_agent, tools=tools)
+### ---------------- ###
 
 # if the length of messages is 0, or when the user \
 # clicks the clear button,
@@ -143,13 +141,9 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
         if "messages" not in st.session_state:
             st.session_state.messages = []
 
-        retrieval_handler = PrintRetrievalHandler(st.container())
-        stream_handler = StreamHandler(st.empty())
         response = agent_executor.invoke({
             "question": user_query,
             "chat_history": msgs.messages,
             "tools": tools
-        }
-            #user_query, callbacks=[retrieval_handler, stream_handler]
-        )
+        }, callbacks=[st_callback])
         st.toast("Success!", icon="✅")
