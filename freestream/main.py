@@ -112,14 +112,13 @@ tools = [
     Tool(
         name="VectorStore",
         func=VectorStoreRetrievalTool._run,
-        description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database."
+        description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database. Returns retrieved documents."
     ),
 ]
 
-# Create a chain that ties everything together
-qa_chain = ConversationalRetrievalChain.from_llm(
-    llm, retriever=retriever, memory=memory, verbose=True
-)
+# Initialize agent
+react_agent = create_react_agent(llm, tools, hub.pull("hwchase17/react"))
+agent_executor = AgentExecutor(agent=react_agent, tools=tools)
 
 # if the length of messages is 0, or when the user \
 # clicks the clear button,
@@ -146,7 +145,11 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
-        response = qa_chain.run(
-            user_query, callbacks=[retrieval_handler, stream_handler]
+        response = agent_executor.invoke({
+            "question": user_query,
+            "chat_history": msgs.messages,
+            "tools": tools
+        }
+            #user_query, callbacks=[retrieval_handler, stream_handler]
         )
         st.toast("Success!", icon="✅")
