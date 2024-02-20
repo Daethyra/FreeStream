@@ -103,16 +103,16 @@ tools = [
         func=tav_search.run,
         description="Perfect for getting current information. Use specific queries related to the chat history and the user\'s current foremost concern."  
     ),
-    
     Tool(
         name="Calculator",
         func=llm_math.run,
         description="Solves maths problems. Translate a math problem into an expression that can be executed using Python\'s numexpr library. Use the output of running this code to help yourself answer the user\'s foremost concern."
     ),
-    Tool(
+    StructuredTool.from_function(
         name="VectorStore",
-        func=VectorStoreRetrievalTool._run,
-        description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database. Returns retrieved documents."
+        func=configure_retriever(uploaded_files),
+        description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database. Returns retrieved documents.",
+        handle_tool_error=True
     ),
 ]
 
