@@ -91,6 +91,12 @@ tav_search = TavilySearchResults(
     description = tav_description,
     max_results = 4
 )
+vectorstore_tool = StructuredTool.from_function(
+    name="VectorStore",
+    func=configure_retriever(uploaded_files),
+    description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database. Returns retrieved documents.",
+    handle_tool_error=True
+)
 tools = [
     Tool(
         name="Web Search",
@@ -102,11 +108,10 @@ tools = [
         func=llm_math.run,
         description="Solves maths problems. Translate a math problem into an expression that can be executed using Python\'s numexpr library. Use the output of running this code to help yourself answer the user\'s foremost concern."
     ),
-    StructuredTool.from_function(
+    Tool(
         name="VectorStore",
-        func=configure_retriever(uploaded_files),
-        description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database. Returns retrieved documents.",
-        handle_tool_error=True
+        func=vectorstore_tool.run,
+        description=vectorstore_tool.description
     ),
 ]
 
