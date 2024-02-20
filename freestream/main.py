@@ -3,7 +3,7 @@ import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
-from langchain.chains import ConversationalRetrievalChain
+from langchain.agents import AgentExecutor, Tool, create_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.chains import LLMMathChain
 from langchain import hub
@@ -37,9 +37,9 @@ uploaded_files = st.sidebar.file_uploader(
     help="Types supported: pdf, doc, docx, txt",
     accept_multiple_files=True,
 )
-if not uploaded_files:
-    st.info("Please upload documents to continue.")
-    st.stop()
+#if not uploaded_files:
+#    st.info("Please upload documents to continue.")
+#    st.stop()
 
 retriever = configure_retriever(uploaded_files)
 
@@ -91,12 +91,27 @@ tav_description = (
 
 # Define tools for the agent
 llm_math = LLMMathChain.from_llm(llm=llm, verbose=True)
+tav_search = TavilySearchResults(
+    description = tav_description,
+    max_results = 4
+)
 tools = [
-    TavilySearchResults(
-        description = tav_description,
-        max_results = 4
+    Tool(
+        name="Web Search",
+        func=tav_search.run,
+        description="Perfect for getting current information. Use specific queries related to the chat history and the user\'s current foremost concern."  
     ),
-    llm_math,
+    
+    Tool(
+        name="Calculator",
+        func=llm_math.run,
+        description="Solves maths problems. Translate a math problem into an expression that can be executed using Python\'s numexpr library. Use the output of running this code to help yourself answer the user\'s foremost concern."
+    ),
+    Tool(
+        name="Uploaded knowledge Database",
+        func=retriever,
+        description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database."
+    ),
 ]
 
 # Create a chain that ties everything together
