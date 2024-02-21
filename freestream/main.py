@@ -1,17 +1,19 @@
 import os
 import streamlit as st
 from langchain_openai import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain.agents import AgentExecutor, Tool, create_react_agent
 from langchain.tools import StructuredTool
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.chains import LLMMathChain
-from langchain import hub
 from utility_funcs import (
     configure_retriever,
     set_llm,
+    llm_math,
+    tav_search,
+    vectorstore_tool,
+    tools,
 )
 
 # Initialize LangSmith tracing
@@ -68,58 +70,19 @@ llm = model_names[
     selected_model
 ]  # Get the selected model from the `model_names` dictionary
 
-# Import custom prompt from Hub
-STARTER_PROMPT = hub.pull("daethyra/freestream")
-
-# Define few-shot prompt examples to guide *generated* search queries
-tav_description = (
-    """
-    A search engine optimized for comprehensive, accurate, and trusted results. Useful for when you need to answer questions about current events. Input should be a search query.
-
-    Examples where curly braces indicate the need to inject context from the chat history to create an effective search query:
-    | User Input | Search Query |
-    | --- | --- |
-    | What is this book about? | What is {book_title} about? |
-    | Who is running for President this year? | Current presidential candidates |
-    | Who won the Super Bowl? | Who won the Super Bowl in {year}? |
-    """
-)
-
-# Define tools for the agent
-llm_math = LLMMathChain.from_llm(llm=llm, verbose=True)
-tav_search = TavilySearchResults(
-    description = tav_description,
-    max_results = 4
-)
-vectorstore_tool = StructuredTool.from_function(
-    name="VectorStore",
-    func=configure_retriever(uploaded_files),
-    description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database. Returns retrieved documents.",
-    handle_tool_error=True
-)
-tools = [
-    Tool(
-        name="Web Search",
-        func=tav_search.run,
-        description="Perfect for getting current information. Use specific queries related to the chat history and the user\'s current foremost concern."  
-    ),
-    Tool(
-        name="Calculator",
-        func=llm_math.run,
-        description="Solves maths problems. Translate a math problem into an expression that can be executed using Python\'s numexpr library. Use the output of running this code to help yourself answer the user\'s foremost concern."
-    ),
-    Tool(
-        name="VectorStore",
-        func=vectorstore_tool.run,
-        description=vectorstore_tool.description
-    ),
-]
-
 # Initialize Callbacks for Agent
 st_callback = StreamlitCallbackHandler(st.container())
 ### Initialize agent ###
 react_agent = create_react_agent(llm, tools, hub.pull("hwchase17/react"))
-agent_executor = AgentExecutor(agent=react_agent, tools=tools)
+agent_executor = AgentExecutor(
+    agent=react_agent,
+    tools=tools,
+    early_stopping_method="generate",
+    handle_parsing_errors=True,
+    max_execution_time=180,
+    max_iterations=7,
+    memory=msgs,
+    )
 ### ---------------- ###
 
 # if the length of messages is 0, or when the user \

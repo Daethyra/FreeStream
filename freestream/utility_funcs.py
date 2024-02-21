@@ -8,7 +8,7 @@ from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_core.callbacks.base import BaseCallbackHandler
+from langchain import hub
 
 # Set up logging
 logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
@@ -95,3 +95,41 @@ def set_llm():
             body="Failed to change model! \nPlease contact the website builder.",
             icon="⚠️",
         )
+
+# Define tools for the agent
+llm_math = LLMMathChain.from_llm(llm=llm, verbose=True)
+tav_search = TavilySearchResults(
+    description = """
+    A search engine optimized for comprehensive, accurate, and trusted results. Useful for when you need to answer questions about current events. Input should be a search query.
+
+    Examples where curly braces indicate the need to inject context from the chat history to create an effective search query:
+    | User Input | Search Query |
+    | --- | --- |
+    | What is this book about? | What is {book_title} about? |
+    | Who is running for President this year? | Current presidential candidates |
+    """,
+    max_results = 4
+)
+vectorstore_tool = StructuredTool.from_function(
+    name="VectorStore",
+    func=configure_retriever(uploaded_files),
+    description="Searches the documents the user uploaded. Input should be in the form of a question containing full context of what you\'re looking for. Include all relevant context, because we use semantic similarity searching to find relevant documents from the Database. Returns retrieved documents.",
+    handle_tool_error=True
+)
+tools = [
+    Tool(
+        name="Web Search",
+        func=tav_search.run,
+        description="Perfect for getting current information. Use specific queries related to the chat history and the user\'s current foremost concern."  
+    ),
+    Tool(
+        name="Calculator",
+        func=llm_math.run,
+        description="Solves maths problems. Translate a math problem into an expression that can be executed using Python\'s numexpr library. Use the output of running this code to help yourself answer the user\'s foremost concern."
+    ),
+    Tool(
+        name="VectorStore",
+        func=vectorstore_tool.run,
+        description=vectorstore_tool.description
+    ),
+]
