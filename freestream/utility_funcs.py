@@ -174,7 +174,7 @@ class PrintRetrievalHandler(BaseCallbackHandler):
 
 
 # Define a callback function for when a model is selected
-def set_llm():
+def set_llm(selected_model: str, model_names: dict):
     """
     Updates the large language model (LLM) in the session state based on the user's selection.
     Also, displays an alert based on the selected model.
@@ -190,18 +190,25 @@ def set_llm():
     2. It displays a warning message when the user switches to the "ChatOpenAI GPT-3.5 Turbo" model.
     3. It displays a failure warning message when the user fails to change the model (e.g., due to unsupported models).
     """
-    # Set the model in session state
-    st.session_state.llm = model_names[selected_model]
+    try:
+        # Set the model in session state
+        st.session_state.llm = model_names[selected_model]
+        
+        # Show an alert based on what model was selected
+        if selected_model == "GPT-3.5 Turbo":
+            st.success(body="Switched to GPT-3.5 Turbo!", icon="⚠️")
+        elif selected_model == "Gemini-Pro":
+            st.success(body="Switched to Gemini-Pro!", icon="⚠️")
 
-    # Show an alert based on what model was selected
-    if st.session_state.model_selector == model_names["ChatOpenAI GPT-3.5 Turbo"]:
-        st.warning(body="Switched to ChatGPT 3.5-Turbo!", icon="⚠️")
+        # Add more if statements for each added model
+        # if st.session_state.model_selector == model_names["GPT-4"]:
+        #     ...
 
-    # Add more if statements for each added model
-    # if st.session_state.model_selector == model_names["GPT-4"]:
-    #     ...
-    else:
-        st.warning(
-            body="Failed to change model! \nPlease contact the website builder.",
-            icon="⚠️",
-        )
+        else:
+            # This should not happen if all models are covered above
+            raise ValueError(f"Unsupported model selected: {selected_model}")
+    except Exception as e:
+        # Log the detailed error message
+        logging.error(f"Error changing model: {e}")
+        # Display a more informative error message to the user
+        st.error(f"Failed to change model! Error: {e}")
