@@ -19,10 +19,10 @@ os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
 os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 
 # Set up page config
-st.set_page_config(page_title="FreeStream: ", page_icon="🗣️📄")
-st.title("FreeStream")
-st.header(":green[_Welcome_]", divider="red")
-st.caption(":violet[_General purpose chatbot assistant_]")
+st.set_page_config(page_title="FreeStream: RAGbot", page_icon="🗣️📄")
+st.title(":rainbow[RAGbot]")
+st.header(":green[_Retrieval Augmented Generation Chatbot_]", divider="red")
+st.caption(":violet[_Ask Your Documents Questions_]")
 st.sidebar.subheader("__User Panel__")
 
 # Add a way to upload files
@@ -109,6 +109,8 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
         response = qa_chain.run(
             user_query, callbacks=[retrieval_handler, stream_handler]
         )
+        # Force Gemini's message to display
+        # I'm unsure why it doesn't work like GPT-3.5
         if selected_model == "Gemini-Pro":
             st.write(response)
         st.toast("Success!", icon="✅")
