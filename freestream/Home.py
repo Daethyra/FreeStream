@@ -1,18 +1,17 @@
 import streamlit as st
 
-st.set_page_config(page_title="FreeStream: Homepage", page_icon="🗣️📄")
+st.set_page_config(page_title="FreeStream: Unlimited Access to AI Tools", page_icon="🗣️📄")
 
-st.title("FreeStream: Your AI-Powered Assistant")
-st.header("Welcome to your AI-powered toolkit!")
+st.title(":rainbow[FreeStream]")
+st.header(":green[_Unlimited Access to AI Tools_]", divider="red")
 # Project Overview
 st.subheader("What is FreeStream?")
 st.write(
     """
-    FreeStream is an open-source AI toolkit designed to simplify and enhance your interactions
-    with cutting-edge language models. Key features include:
+    FreeStream is a project I'm working on to make AI tools more accessible. It's not just about having a chatbot; it's about exploring how AI can help us in our daily lives, today and in the future. Here's what you can do with FreeStream:
 
-    *   **Conversational AI:** Engage in natural conversations with a powerful chatbot.
-    *   **Document Search & Analysis:** Process files and extract insights efficiently.
-    *   **Customizable:** Adapt and extend FreeStream to suit your specific needs.
+    *   **Discover AI Tools:** Explore a variety of AI tools, from conversational AI to document analysis.
+    *   **Learn About AI:** Dive into interactive experiences to learn more about AI and its potential.
+    *   **Apply AI to Your Life:** Use AI tools to tackle real-world problems, making your tasks easier with AI-powered solutions.
     """
 )
