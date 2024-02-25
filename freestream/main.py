@@ -1,5 +1,6 @@
 import os
 import streamlit as st
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
@@ -13,7 +14,7 @@ from utility_funcs import (
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = "FreeStream-v2"
+os.environ["LANGCHAIN_PROJECT"] = "FreeStream-v2.0.2"
 os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
 os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 
@@ -45,12 +46,21 @@ memory = ConversationBufferMemory(
 
 # Create a dictionary with keys to chat model classes
 model_names = {
-    "ChatOpenAI GPT-3.5 Turbo": ChatOpenAI(  # Define a dictionary entry for the "ChatOpenAI GPT-3.5 Turbo" model
+    "GPT-3.5 Turbo": ChatOpenAI(  # Define a dictionary entry for the "ChatOpenAI GPT-3.5 Turbo" model
         model_name="gpt-3.5-turbo-0125",  # Set the OpenAI model name
         openai_api_key=st.secrets.OPENAI.openai_api_key,  # Set the OpenAI API key from the Streamlit secrets manager
         temperature=0.7,  # Set the temperature for the model's responses
         streaming=True,  # Enable streaming responses for the model
     ),
+    
+    "Gemini-Pro": ChatGoogleGenerativeAI(
+        model="gemini-pro",
+        google_api_key=st.secrets.GOOGLE.google_api_key,
+        temperature=0.5,
+        top_k=40,
+        top_p=0.65,
+        convert_system_message_to_human=True,
+    )
 }
 
 # Create a dropdown menu for selecting a chat model
@@ -58,7 +68,7 @@ selected_model = st.selectbox(
     label="Choose your chat model:",  # Set the label for the dropdown menu
     options=list(model_names.keys()),  # Set the available model options
     key="model_selector",  # Set a unique key for the dropdown menu
-    on_change=set_llm,  # Set the callback function
+    on_change=lambda: set_llm(st.session_state.model_selector, model_names),  # Set the callback function
 )
 
 # Load the selected model dynamically
@@ -99,4 +109,6 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
         response = qa_chain.run(
             user_query, callbacks=[retrieval_handler, stream_handler]
         )
+        if selected_model == "Gemini-Pro":
+            st.write(response)
         st.toast("Success!", icon="✅")
