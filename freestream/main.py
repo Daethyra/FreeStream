@@ -14,7 +14,7 @@ from utility_funcs import (
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = "FreeStream-v2"
+os.environ["LANGCHAIN_PROJECT"] = "FreeStream-v2.0.2"
 os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
 os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 
@@ -56,9 +56,9 @@ model_names = {
     "Gemini-Pro": ChatGoogleGenerativeAI(
         model="gemini-pro",
         google_api_key=st.secrets.GOOGLE.google_api_key,
-        temperature=0.7,
+        temperature=0.5,
         top_k=40,
-        top_p=0.95,
+        top_p=0.65,
         convert_system_message_to_human=True,
     )
 }
@@ -109,4 +109,6 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
         response = qa_chain.run(
             user_query, callbacks=[retrieval_handler, stream_handler]
         )
+        if selected_model == "Gemini-Pro":
+            st.write(response)
         st.toast("Success!", icon="✅")
