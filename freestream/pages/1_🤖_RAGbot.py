@@ -19,8 +19,8 @@ os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
 os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 
 # Set up page config
-st.set_page_config(page_title="FreeStream: RAGbot", page_icon="🗣️📄")
-st.title(":rainbow[RAGbot]")
+st.set_page_config(page_title="FreeStream: RAGbot", page_icon="🤖")
+st.title("🤖:rainbow[RAGbot]")
 st.header(":green[_Retrieval Augmented Generation Chatbot_]", divider="red")
 st.caption(":violet[_Ask Your Documents Questions_]")
 st.sidebar.subheader("__User Panel__")
@@ -56,10 +56,12 @@ model_names = {
     "Gemini-Pro": ChatGoogleGenerativeAI(
         model="gemini-pro",
         google_api_key=st.secrets.GOOGLE.google_api_key,
-        temperature=0.5,
-        top_k=40,
-        top_p=0.65,
+        temperature=0,
+        top_k=50,
+        top_p=1,
         convert_system_message_to_human=True,
+        max_output_tokens=512,
+        max_retries=1,
     )
 }
 

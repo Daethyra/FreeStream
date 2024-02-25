@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="FreeStream: Unlimited Access to AI Tools", page_icon="🗣️📄")
+st.set_page_config(page_title="FreeStream: Unlimited Access to AI Tools", page_icon="🏡")
 
 st.title(":rainbow[FreeStream]")
 st.header(":green[_Unlimited Access to AI Tools_]", divider="red")
