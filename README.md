@@ -24,7 +24,7 @@ Providing AI solutions for everyday people
 
 ## Quickstart
 
-As of version 1.0.1, a test version is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 2.0.0")
+As of version 1.0.1, a test version is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 3.0.0")
 
 ### Installation
 
