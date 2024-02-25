@@ -1,7 +1,7 @@
 [tool.poetry]
 
 name = "FreeStream"
-version = "2.0.1"
+version = "2.0.2"
 description = "An effort to give easy access to generative AI."
 authors = ["Daethyra <109057945+Daethyra@users.noreply.github.com>"]
 readme = "README.md"
@@ -11,10 +11,11 @@ license = "GNU AGPL"
 python = ">=3.10,<3.12"
 
 langchain = "^0.1.6"
+langchain-openai = "^0.0.5"
+langchain-google-genai = "^0.0.9"
 streamlit = "^1.31.1"
 unstructured = {extras = ["all-docs"], version = "^0.12.4"}
 sentence-transformers = "^2.3.1"
-langchain-openai = "^0.0.5"
 faiss-cpu = "^1.7.4"
 setuptools = "^69.1.0"
 torch = "^2.2.0"
