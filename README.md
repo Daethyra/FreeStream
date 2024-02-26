@@ -103,9 +103,9 @@ I'm focusing on overhauling the retrieval prompting logic. I'll remove `Conversa
 - [x] Turn into a Multi-Page Application (MPA)
   - [x] (Homepage) Add a welcome screen with...
     - [x] a description of the project
-    - [ ] table of contents
+    - [ ] ~~table of contents~~
     - [ ] privacy policy
-    - [ ] "Submit Report/Request" form
+    - [ ] "Report/Request" form
   - [x] (Page) Migrate RAG SPA code
     - [ ] Add "Temperature" slider
   - [ ] (Page) Add a "Task Transcriber"
