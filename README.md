@@ -107,6 +107,7 @@ I'm focusing on overhauling the retrieval prompting logic. I'll remove `Conversa
     - [ ] privacy policy
     - [ ] "Submit Report/Request" form
   - [x] (Page) Migrate RAG SPA code
+    - [ ] Add "Temperature" slider
   - [ ] (Page) Add a "Task Transcriber"
     - [ ] Microphone input (Record in browser)
     - [ ] Transcribes audio to text
