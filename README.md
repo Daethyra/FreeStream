@@ -140,3 +140,10 @@ I'm focusing on overhauling the retrieval prompting logic. I'll remove `Conversa
 ---
 
 # [License](./LICENSE)
+
+# Privacy Policy
+A conglomerate privacy policy governing FreeStream is planned. For the time being, please refer to the privacy policies of the underlying foundational AI model providers.
+
+- [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy)
+- [Google AI Studio](https://transparency.google/our-policies/privacy-policy-terms-of-service/)
+  - I couldn't find a privacy policy specific to Google AI Studio.
