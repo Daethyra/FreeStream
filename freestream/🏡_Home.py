@@ -19,13 +19,53 @@ st.write(
     """
 )
 
-st.divider()
 st.subheader("What tools are currently available?")
 st.write(
     """
-    Currently, FreeStream offers a range of AI tools, including:
-    
     *   **RAGbot**: An AI chatbot designed to answer questions about documents.
-    
     """
 )
+
+st.markdown(
+    """
+    #### References
+    
+    * **[Run This App Locally](https://github.com/Daethyra/FreeStream/blob/streamlit/README.md#installation)**
+    * **[Privacy Policy](https://github.com/Daethyra/FreeStream/blob/streamlit/README.md#privacy-policy)**
+    * **[GitHub Repository](https://github.com/Daethyra/FreeStream)**    
+    """
+)
+
+st.divider()
+
+# Create a footer using community suggestion:
+# https://discuss.streamlit.io/t/streamlit-footer/12181
+footer="""<style>
+a:link , a:visited{
+color: blue;
+background-color: transparent;
+text-decoration: underline;
+}
+
+a:hover,  a:active {
+color: red;
+background-color: transparent;
+text-decoration: underline;
+}
+
+.footer {
+position: fixed;
+left: 0;
+bottom: 0;
+height: 55px;
+width: 100%;
+background-color: white;
+color: green;
+text-align: center;
+}
+</style>
+<div class="footer">
+<p>Developed with ❤ by <a style='display: block; text-align: center;' href="https://www.linkedin.com/in/daemon-carino/" target="_blank">Daethyra</a></p>
+</div>
+"""
+st.markdown(footer,unsafe_allow_html=True)
