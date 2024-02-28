@@ -22,6 +22,7 @@ Providing AI solutions for everyday people
   - [Thinking Out Loud](#thinking-out-loud) 
   - [Future Functionality Plans](#future-functionality-plans)
 - [License](./LICENSE)
+- [Privacy Policy](#privacy-policy)
 
 ## Quickstart
 
