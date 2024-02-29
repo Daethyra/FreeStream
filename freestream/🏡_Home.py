@@ -1,9 +1,6 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="FreeStream: Unlimited Access to AI Tools",
-    page_icon="🏡"
-)
+st.set_page_config(page_title="FreeStream: Unlimited Access to AI Tools", page_icon="🏡")
 
 st.title("FreeStream")
 st.header(":green[_Unlimited Access to AI Tools_]", divider="red")
@@ -40,7 +37,7 @@ st.divider()
 
 # Create a footer using community suggestion:
 # https://discuss.streamlit.io/t/streamlit-footer/12181
-footer="""<style>
+footer = """<style>
 a:link , a:visited{
     color: #ffffff; /* White */
     background-color: transparent;
@@ -72,4 +69,4 @@ a:hover, a:active {
 <p>Developed with ❤ by <a href="https://www.linkedin.com/in/daemon-carino/" target="_blank">Daethyra</a></p>
 </div>
 """
-st.markdown(footer,unsafe_allow_html=True)
+st.markdown(footer, unsafe_allow_html=True)

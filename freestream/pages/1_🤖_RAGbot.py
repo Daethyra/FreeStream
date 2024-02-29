@@ -52,7 +52,6 @@ model_names = {
         temperature=0.7,  # Set the temperature for the model's responses
         streaming=True,  # Enable streaming responses for the model
     ),
-    
     "Gemini-Pro": ChatGoogleGenerativeAI(
         model="gemini-pro",
         google_api_key=st.secrets.GOOGLE.google_api_key,
@@ -62,7 +61,7 @@ model_names = {
         convert_system_message_to_human=True,
         max_output_tokens=512,
         max_retries=1,
-    )
+    ),
 }
 
 # Create a dropdown menu for selecting a chat model
@@ -70,7 +69,9 @@ selected_model = st.selectbox(
     label="Choose your chat model:",  # Set the label for the dropdown menu
     options=list(model_names.keys()),  # Set the available model options
     key="model_selector",  # Set a unique key for the dropdown menu
-    on_change=lambda: set_llm(st.session_state.model_selector, model_names),  # Set the callback function
+    on_change=lambda: set_llm(
+        st.session_state.model_selector, model_names
+    ),  # Set the callback function
 )
 
 # Load the selected model dynamically
