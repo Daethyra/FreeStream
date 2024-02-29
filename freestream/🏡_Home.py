@@ -6,22 +6,24 @@ st.title("FreeStream")
 st.header(":green[_Unlimited Access to AI Tools_]", divider="red")
 # Project Overview
 st.subheader("What is FreeStream?")
+
 st.write(
     """
-    FreeStream is a project I'm working on to make AI tools more accessible. It's not just about having a chatbot; it's about exploring how AI can help us in our daily lives, today and in the future. Here's what you can do with FreeStream:
-
-    *   **Explore AI Tools:** Dive into a wide range of AI tools, from chatbots to document analysis, to discover what's possible.
-    *   **Educate Yourself:** Engage in interactive experiences designed to deepen your understanding of AI and its capabilities.
-    *   **Solve Real-World Problems:** Utilize AI tools to simplify and enhance your daily tasks, showcasing the power of AI in action.
+    AI tools often seem complex or even intimidating, but FreeStream aims to change that. This project is about making AI accessible and understandable, showing how it can solve real-world problems in your daily life.
     """
 )
-
+st.divider()
 st.subheader("What tools are currently available?")
 st.write(
     """
-    *   **RAGbot**: An AI chatbot designed to answer questions about documents.
+    FreeStream's RAGbot can answer your questions directly from the documents you provide. Here's how it works:
+
+    * **Upload Your Files:**  Share PDFs, Word documents, or plain text files. 
+    * **Ask Your Question:**  Get specific answers based on the information in your documents.
+    * **Harness Advanced AI:** RAGbot uses reflective retrieval for accurate results.
     """
 )
+
 
 st.markdown(
     """
