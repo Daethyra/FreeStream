@@ -42,30 +42,34 @@ st.divider()
 # https://discuss.streamlit.io/t/streamlit-footer/12181
 footer="""<style>
 a:link , a:visited{
-color: blue;
-background-color: transparent;
-text-decoration: underline;
+    color: #ffffff; /* White */
+    background-color: transparent;
+    text-decoration: underline;
 }
 
-a:hover,  a:active {
-color: red;
-background-color: transparent;
-text-decoration: underline;
+a:hover, a:active {
+    color: #cccccc; /* Light grey for hover */
+    background-color: transparent;
+    text-decoration: underline;
 }
 
 .footer {
-position: fixed;
-left: 0;
-bottom: 0;
-height: 55px;
-width: 100%;
-background-color: white;
-color: green;
-text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 55px;
+    width: 100%;
+    background-color: #343a40; /* Dark grey */
+    color: #ffffff; /* White for text */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
 }
 </style>
 <div class="footer">
-<p>Developed with ❤ by <a style='display: block; text-align: center;' href="https://www.linkedin.com/in/daemon-carino/" target="_blank">Daethyra</a></p>
+<p>Developed with ❤ by <a href="https://www.linkedin.com/in/daemon-carino/" target="_blank">Daethyra</a></p>
 </div>
 """
 st.markdown(footer,unsafe_allow_html=True)
