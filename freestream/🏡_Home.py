@@ -5,7 +5,7 @@ st.set_page_config(
     page_icon="🏡"
 )
 
-st.title(":rainbow[FreeStream]")
+st.title("[FreeStream")
 st.header(":green[_Unlimited Access to AI Tools_]", divider="red")
 # Project Overview
 st.subheader("What is FreeStream?")
