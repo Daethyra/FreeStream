@@ -1,0 +1,76 @@
+[logger]
+level = "info"
+# String format for logging messages. If logger.datetimeFormat is set,
+# logger messages will default to `%(asctime)s.%(msecs)03d %(message)s`. See
+# Python's documentation for available attributes:
+# https://docs.python.org/2.6/library/logging.html#formatter-objects
+# Default: "%(asctime)s %(message)s"
+messageFormat = "%(asctime)s %(message)s"
+
+[client]
+caching = false
+
+# Controls whether uncaught app exceptions and deprecation warnings
+# are displayed in the browser. By default, this is set to True and
+# Streamlit displays app exceptions and associated tracebacks, and
+# deprecation warnings, in the browser.
+#
+# If set to False, deprecation warnings and full exception messages
+# will print to the console only. Exceptions will still display in the
+# browser with a generic error message. For now, the exception type and
+# traceback show in the browser also, but they will be removed in the
+# future.
+# Default: true
+showErrorDetails = false
+
+# Controls whether the default sidebar page navigation in a multipage app is
+# displayed.
+# Default: true
+showSidebarNavigation = true
+
+[runner]
+
+# Allows you to type a variable or string by itself in a single line of
+# Python code to write it to the app.
+# Default: true
+magicEnabled = false
+
+[server]
+
+# List of folders that should not be watched for changes. This
+# impacts both "Run on Save" and @st.cache.
+# Relative paths will be taken as relative to the current working directory.
+# Example: ['/home/user1/env', 'relative/path/to/folder']
+# Default: []
+folderWatchBlacklist = ['.streamlit/']
+
+# Automatically rerun script when the file is modified on disk.
+# Default: false
+runOnSave = true
+
+[browser]
+# Whether to send usage statistics to Streamlit.
+# Default: true
+gatherUsageStats = true
+
+[theme]
+
+# The preset Streamlit theme that your custom theme inherits from.
+# One of "light" or "dark".
+# base =
+
+# Primary accent color for interactive elements.
+# primaryColor =
+
+# Background color for the main content area.
+# backgroundColor =
+
+# Background color used for the sidebar and most interactive widgets.
+# secondaryBackgroundColor =
+
+# Color used for almost all text.
+# textColor =
+
+# Font family for all text in the app, except code blocks. One of "sans serif",
+# "serif", or "monospace".
+# font =
