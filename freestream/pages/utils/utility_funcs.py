@@ -173,10 +173,10 @@ class PrintRetrievalHandler(BaseCallbackHandler):
         self.status.update(state="complete")
 
 
-# Define a callback function for when a model is selected
+# Define a callback function for selecting a model
 def set_llm(selected_model: str, model_names: dict):
     """
-    Updates the large language model (LLM) in the session state based on the user's selection.
+    Sets the large language model (LLM) in the session state based on the user's selection.
     Also, displays an alert based on the selected model.
 
     Parameters:
@@ -184,31 +184,16 @@ def set_llm(selected_model: str, model_names: dict):
 
     Returns:
     - None
-
-    This function has the following side effects:
-    1. It updates the `llm` key in the `st.session_state` dictionary with the selected model.
-    2. It displays a warning message when the user switches to the "ChatOpenAI GPT-3.5 Turbo" model.
-    3. It displays a failure warning message when the user fails to change the model (e.g., due to unsupported models).
     """
     try:
         # Set the model in session state
         st.session_state.llm = model_names[selected_model]
         
         # Show an alert based on what model was selected
-        if selected_model == "GPT-3.5 Turbo":
-            st.success(body="Switched to GPT-3.5 Turbo!", icon="⚠️")
-        elif selected_model == "Gemini-Pro":
-            st.success(body="Switched to Gemini-Pro!", icon="⚠️")
+        st.success(body=f"Switched to {selected_model}!", icon="✅")
 
-        # Add more if statements for each added model
-        # if st.session_state.model_selector == model_names["GPT-4"]:
-        #     ...
-
-        else:
-            # This should not happen if all models are covered above
-            raise ValueError(f"Unsupported model selected: {selected_model}")
     except Exception as e:
         # Log the detailed error message
-        logging.error(f"Error changing model: {e}")
+        logging.error(f"Unsupported model selected or Error changing model: {e}\n{selected_model}")
         # Display a more informative error message to the user
-        st.error(f"Failed to change model! Error: {e}")
+        st.error(f"Failed to change model! Error: {e}\n{selected_model}")
