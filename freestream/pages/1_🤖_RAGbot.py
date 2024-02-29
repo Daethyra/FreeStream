@@ -20,7 +20,7 @@ os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 
 # Set up page config
 st.set_page_config(page_title="FreeStream: RAGbot", page_icon="🤖")
-st.title("🤖:rainbow[RAGbot]")
+st.title("🤖RAGbot")
 st.header(":green[_Retrieval Augmented Generation Chatbot_]", divider="red")
 st.caption(":violet[_Ask Your Documents Questions_]")
 st.sidebar.subheader("__User Panel__")
