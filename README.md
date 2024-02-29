@@ -21,25 +21,44 @@ Providing AI solutions for everyday people
 - [Roadmap](#roadmap)
   - [Thinking Out Loud](#thinking-out-loud) 
   - [Future Functionality Plans](#future-functionality-plans)
+- [License](./LICENSE)
+- [Privacy Policy](#privacy-policy)
 
 ## Quickstart
 
-As of version 1.0.1, a test version is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 3.0.0")
+This app is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 3.0.0")
 
 ### Installation
 
 This project uses `poetry` for dependency management because that's what Streamlit Community Cloud uses to deploy the project.
 
-To install the project's dependencies in a virtual environment using poetry, run:
+Install it with:
+```bash
+pip install -U pip && pip install -U poetry
+```
+
+Then, install the project's dependencies in a virtual environment using poetry. 
+
+Run:
 
 ```bash
 poetry install
 ```
 
+You will need to set all required secrets, which require their own respective accounts.
+Make a copy of "template.secrets.toml" and rename it to "secrets.toml" in the root of the project. Fill out each field in the file.
+
+**Need API Keys?**
+| **API Platform** | **Link** |
+| ---- | ---------- |
+| OpenAI | https://platform.openai.com/api-keys |
+| Langchain | https://smith.langchain.com/ |
+| Google | https://aistudio.google.com/app/apikey |
+
 You can then start the development server with hot reloading by running:
 
 ```bash
-poetry run streamlit run ./freestream/main.py
+poetry run streamlit run ./freestream/🏡_Home.py
 ```
 
 ---
@@ -47,7 +66,7 @@ poetry run streamlit run ./freestream/main.py
 ## Description
 I originally created this project as a chatbot for law and medical professionals, but I quickly realized a more flexible system would benefit everyone.
 
-#### -- **Critical Vocabulary** --
+#### -- **Important Vocabulary** --
 
 | **Vocab** | **Definition** |
 | ---- | ---------- |
@@ -57,11 +76,10 @@ I originally created this project as a chatbot for law and medical professionals
 
 ### What can FreeStream do for me, currently?
 
-FreeStream functions as a chatbot powered by GPT-3.5-Turbo. Upload a file (or files) and take advantage of advanced prompt engineering for the most helpful results based on your uploaded content.
+FreeStream functions as a chatbot powered by GPT-3.5-Turbo or Gemini-Pro. Upload a file (or files) and take advantage of advanced prompt engineering for the most helpful results based on your uploaded content.
 
 **Note**:
-* Only supports the GPT-3.5-Turbo model
-- The implemented RAG logic strictly adheres to the uploaded context. This limits meaningful interaction with the chat history.
+* The implemented RAG logic strictly adheres to the uploaded context. This limits meaningful interaction with the chat history.
 
 ## Functional Requirements
 
@@ -76,7 +94,7 @@ The application **MUST**...
       * [HF Mask Maker (Space)](https://huggingface.co/spaces/daethyra/inpaint-mask-maker)
 4. Let users generate tasks based on their speech
 5. Include a privacy policy that clearly outlines data usage when interacting with GPT-3.5 or Gemini-Pro
-6. Provide a "Submit Report/Request" form
+6. ~~Provide a "Submit Report/Request" form~~
 
 ## "Non-Functional Requirements
 
@@ -105,7 +123,7 @@ I'm focusing on overhauling the retrieval prompting logic. I'll remove `Conversa
     - [x] a description of the project
     - [ ] ~~table of contents~~
     - [ ] privacy policy
-    - [ ] "Report/Request" form
+    - [ ] ~~"Report/Request" form~~
   - [x] (Page) Migrate RAG SPA code
     - [ ] Add "Temperature" slider
   - [ ] (Page) Add a "Task Transcriber"
@@ -117,8 +135,16 @@ I'm focusing on overhauling the retrieval prompting logic. I'll remove `Conversa
     - [ ] Multi-file upload
     - [ ] File type detection
   - [ ] (Page) Add "Object Removal" from images
-    - [ ] Review HuggingFace Spaces's as a potential solution
+    - [x] Review HuggingFace Spaces's as a potential solution
+- [ ] Add "Contributing" section or file
 
 ---
 
-[License](./LICENSE)
+# [License](./LICENSE)
+
+# Privacy Policy
+A conglomerate privacy policy governing FreeStream is planned. For the time being, please refer to the privacy policies of the underlying foundational AI model providers.
+
+- [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy)
+- [Google AI Studio](https://transparency.google/our-policies/privacy-policy-terms-of-service/)
+  - I couldn't find a privacy policy specific to Google AI Studio.
