@@ -11,12 +11,16 @@ from pages.utils.utility_funcs import (
     PrintRetrievalHandler,
     set_llm,
 )
+from pages.utils.agent import agent
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = "FreeStream-v3.0.0"
 os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
 os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
+
+# Initialize Tavily API Key
+os.environ["TAVILY_API_KEY"] = st.secrets.TAVILY.TAVILY_API_KEY
 
 # Set up page config
 st.set_page_config(page_title="FreeStream: RAGbot", page_icon="🤖")
@@ -79,11 +83,6 @@ llm = model_names[
     selected_model
 ]  # Get the selected model from the `model_names` dictionary
 
-# Create a chain that ties everything together
-qa_chain = ConversationalRetrievalChain.from_llm(
-    llm, retriever=retriever, memory=memory, verbose=True
-)
-
 # if the length of messages is 0, or when the user \
 # clicks the clear button,
 # show a default message from the AI
@@ -109,7 +108,7 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
-        response = qa_chain.run(
+        response = agent.run(
             user_query, callbacks=[retrieval_handler, stream_handler]
         )
         # Force Gemini's message to display
