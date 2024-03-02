@@ -26,7 +26,7 @@ Providing AI solutions for everyday people
 
 ## Quickstart
 
-This app is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 3.0.0")
+This app is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 4.0.0")
 
 ### Installation
 
@@ -116,33 +116,23 @@ I'm focusing on overhauling the retrieval prompting logic. I'll remove `Conversa
 - [x] Create an RAG chatbot
 - [x] Add Gemini-Pro to the model list
 - [ ] Integrate [`StreamlitCallbackHandler`](https://api.python.langchain.com/en/latest/callbacks/langchain_community.callbacks.streamlit.streamlit_callback_handler.StreamlitCallbackHandler.html "Python API Documentation")
-- [ ] Add AI decision making
-  - [ ] Implement Corrective-RAG OR Reflective-RAG
+- [x] Add AI decision making
+  - [x] Implement Corrective-RAG OR Reflective-RAG
 - [x] Turn into a Multi-Page Application (MPA)
-  - [x] (Homepage) Add a welcome screen with...
+  - [x] (Homepage) Add a welcome screen with:
     - [x] a description of the project
-    - [ ] ~~table of contents~~
-    - [ ] privacy policy
-    - [ ] ~~"Report/Request" form~~
+    - [x] privacy policy
   - [x] (Page) Migrate RAG SPA code
     - [ ] Add "Temperature" slider
   - [ ] (Page) Add a "Task Transcriber"
-    - [ ] Microphone input (Record in browser)
-    - [ ] Transcribes audio to text
-    - [ ] Use LLM to identify each and every task while grouping some to avoid redundance
-    - [ ] Generates text within a predefined task template, for each task identified
   - [ ] (Page) Add "Image Upscaler"
-    - [ ] Multi-file upload
-    - [ ] File type detection
   - [ ] (Page) Add "Object Removal" from images
-    - [x] Review HuggingFace Spaces's as a potential solution
-- [ ] Add "Contributing" section or file
 
 ---
 
 # [License](./LICENSE)
 
-# Privacy Policy
+# Privacy Policies
 A conglomerate privacy policy governing FreeStream is planned. For the time being, please refer to the privacy policies of the underlying foundational AI model providers.
 
 - [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy)
