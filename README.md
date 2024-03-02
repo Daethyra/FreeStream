@@ -148,3 +148,4 @@ A conglomerate privacy policy governing FreeStream is planned. For the time bein
 - [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy)
 - [Google AI Studio](https://transparency.google/our-policies/privacy-policy-terms-of-service/)
   - I couldn't find a privacy policy specific to Google AI Studio.
+- [Streamlit](https://streamlit.io/privacy-policy/)

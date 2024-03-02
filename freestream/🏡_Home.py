@@ -1,30 +1,30 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="FreeStream: Unlimited Access to AI Tools",
-    page_icon="🏡"
-)
+st.set_page_config(page_title="FreeStream: Unlimited Access to AI Tools", page_icon="🏡")
 
 st.title("FreeStream")
 st.header(":green[_Unlimited Access to AI Tools_]", divider="red")
 # Project Overview
-st.subheader("What is FreeStream?")
+st.subheader(":blue[What is FreeStream?]")
+
 st.write(
     """
-    FreeStream is a project I'm working on to make AI tools more accessible. It's not just about having a chatbot; it's about exploring how AI can help us in our daily lives, today and in the future. Here's what you can do with FreeStream:
-
-    *   **Explore AI Tools:** Dive into a wide range of AI tools, from chatbots to document analysis, to discover what's possible.
-    *   **Educate Yourself:** Engage in interactive experiences designed to deepen your understanding of AI and its capabilities.
-    *   **Solve Real-World Problems:** Utilize AI tools to simplify and enhance your daily tasks, showcasing the power of AI in action.
+    AI tools often seem complex or even intimidating, but FreeStream aims to change that. This project is about making AI accessible and understandable, showing how it can solve real-world problems in your daily life.
     """
 )
-
+st.divider()
 st.subheader("What tools are currently available?")
 st.write(
     """
-    *   **RAGbot**: An AI chatbot designed to answer questions about documents.
+    
+    ### :blue[RAGbot]:
+    
+    :orange[*FreeStream's RAGbot can answer your questions directly from the documents you provide.*]
+    
+    It works by allowing you to upload PDFs, Word documents, or plain text files, and then ask specific questions based on the information in your documents. The RAGbot uses a method called Corrective Retrieval Augmented Generation (CRAG), which involves retrieving documents, grading them for relevance, and generating answers if at least one document is relevant. If all documents are ambiguous or incorrect, it retrieves from an external source and uses that as context for answer generation. This process ensures a neat workflow where retrieval is done similarly to basic RAG, but with an added step of reasoning about the documents to ensure accurate and helpful responses.
     """
 )
+
 
 st.markdown(
     """
@@ -40,7 +40,7 @@ st.divider()
 
 # Create a footer using community suggestion:
 # https://discuss.streamlit.io/t/streamlit-footer/12181
-footer="""<style>
+footer = """<style>
 a:link , a:visited{
     color: #ffffff; /* White */
     background-color: transparent;
@@ -72,4 +72,4 @@ a:hover, a:active {
 <p>Developed with ❤ by <a href="https://www.linkedin.com/in/daemon-carino/" target="_blank">Daethyra</a></p>
 </div>
 """
-st.markdown(footer,unsafe_allow_html=True)
+st.markdown(footer, unsafe_allow_html=True)
