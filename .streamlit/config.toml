@@ -8,8 +8,6 @@ level = "info"
 messageFormat = "%(asctime)s %(message)s"
 
 [client]
-caching = false
-
 # Controls whether uncaught app exceptions and deprecation warnings
 # are displayed in the browser. By default, this is set to True and
 # Streamlit displays app exceptions and associated tracebacks, and
