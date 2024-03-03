@@ -64,6 +64,28 @@ def configure_retriever(uploaded_files):
     return retriever
 
 
+# Define a callback function for selecting a model
+def set_llm(selected_model: str, model_names: dict):
+    """
+    Sets the large language model (LLM) in the session state based on the user's selection.
+    Also, displays an alert based on the selected model.
+    """
+    try:
+        # Set the model in session state
+        st.session_state.llm = model_names[selected_model]
+
+        # Show an alert based on what model was selected
+        st.success(body=f"Switched to {selected_model}!", icon="✅")
+
+    except Exception as e:
+        # Log the detailed error message
+        logging.error(
+            f"Unsupported model selected or Error changing model: {e}\n{selected_model}"
+        )
+        # Display a more informative error message to the user
+        st.error(f"Failed to change model! Error: {e}\n{selected_model}")
+
+
 class StreamHandler(BaseCallbackHandler):
     """
     A callback handler for streaming the model's output to the user interface.
@@ -171,25 +193,3 @@ class PrintRetrievalHandler(BaseCallbackHandler):
             self.status.write(f"**Document {idx} from {source}**")
             self.status.markdown(doc.page_content)
         self.status.update(state="complete")
-
-
-# Define a callback function for selecting a model
-def set_llm(selected_model: str, model_names: dict):
-    """
-    Sets the large language model (LLM) in the session state based on the user's selection.
-    Also, displays an alert based on the selected model.
-    """
-    try:
-        # Set the model in session state
-        st.session_state.llm = model_names[selected_model]
-
-        # Show an alert based on what model was selected
-        st.success(body=f"Switched to {selected_model}!", icon="✅")
-
-    except Exception as e:
-        # Log the detailed error message
-        logging.error(
-            f"Unsupported model selected or Error changing model: {e}\n{selected_model}"
-        )
-        # Display a more informative error message to the user
-        st.error(f"Failed to change model! Error: {e}\n{selected_model}")
