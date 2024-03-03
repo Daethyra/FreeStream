@@ -42,6 +42,22 @@ if not uploaded_files:
 
 retriever = configure_retriever(uploaded_files)
 
+# Add temperature header
+temperature_header = st.sidebar.markdown(
+    """
+    ## Temperature Slider
+    """
+)
+# Add the sidebar temperature slider
+temperature_slider = st.sidebar.slider(
+    label=""":orange[Set LLM Temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
+    min_value=0.0,
+    max_value=1.0,
+    value=0.7,
+    step=0.05,
+    key="llm_temperature",
+)
+
 # Setup memory for contextual conversation
 msgs = StreamlitChatMessageHistory()
 memory = ConversationBufferMemory(
@@ -51,15 +67,17 @@ memory = ConversationBufferMemory(
 # Create a dictionary with keys to chat model classes
 model_names = {
     "GPT-3.5 Turbo": ChatOpenAI(  # Define a dictionary entry for the "ChatOpenAI GPT-3.5 Turbo" model
-        model_name="gpt-3.5-turbo-0125",  # Set the OpenAI model name
+        model="gpt-3.5-turbo-0125",  # Set the OpenAI model name
         openai_api_key=st.secrets.OPENAI.openai_api_key,  # Set the OpenAI API key from the Streamlit secrets manager
-        temperature=0.7,  # Set the temperature for the model's responses
+        temperature=temperature_slider,  # Set the temperature for the model's responses using the sidebar slider
         streaming=True,  # Enable streaming responses for the model
+        max_tokens=512,  # Set the maximum number of tokens for the model's responses
+        max_retries=1,  # Set the maximum number of retries for the model
     ),
     "Gemini-Pro": ChatGoogleGenerativeAI(
         model="gemini-pro",
         google_api_key=st.secrets.GOOGLE.google_api_key,
-        temperature=0,
+        temperature=temperature_slider,
         top_k=50,
         top_p=1,
         convert_system_message_to_human=True,
@@ -86,6 +104,7 @@ llm = model_names[
 # if the length of messages is 0, or when the user \
 # clicks the clear button,
 # show a default message from the AI
+st.sidebar.divider()  # Divde from other items to accentuate its own existence
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
     msgs.clear()
     # show a default message from the AI
