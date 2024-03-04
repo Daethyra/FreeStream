@@ -4,6 +4,8 @@ import logging
 import tempfile
 import torch
 import streamlit as st
+from PIL import Image
+from transformers import pipeline
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -193,3 +195,20 @@ class PrintRetrievalHandler(BaseCallbackHandler):
             self.status.write(f"**Document {idx} from {source}**")
             self.status.markdown(doc.page_content)
         self.status.update(state="complete")
+
+# Define a function to upscale images using HuggingFace and Torch
+def image_upscaler(image):
+    
+    # Assign the image to a variable
+    img = Image.open(image)
+    
+    # Create the upscale pipeline
+    upscaler = pipeline("image-to-image",
+                        model="caidas/swin2SR-classical-sr-x2-64",
+                        framework="pt",
+                        device="cuda" if torch.cuda.is_available() else "cpu",
+                        )
+    
+    # Upscale the image
+    upscaled_img = upscaler(img)
+    return upscaled_img
