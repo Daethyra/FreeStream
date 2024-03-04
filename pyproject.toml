@@ -16,7 +16,7 @@ langchain-google-genai = "^0.0.9"
 streamlit = "^1.31.1"
 unstructured = {extras = ["all-docs"], version = "^0.12.4"}
 sentence-transformers = "^2.3.1"
-faiss-cpu = "^1.7.4"
+faiss-cpu = "^1.8.0"
 setuptools = "^69.1.0"
 torch = "^2.2.0"
 opencv-python-headless = "^4.9.0.80"
