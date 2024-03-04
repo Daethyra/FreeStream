@@ -127,9 +127,11 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
-        response = agent.run(
-            user_query, callbacks=[retrieval_handler, stream_handler]
-        )
+        response = agent.invoke({
+            "question": user_query,
+        },
+            callbacks=[retrieval_handler, stream_handler]
+            )
         # Force Gemini's message to display
         # I'm unsure why it doesn't work like GPT-3.5
         if selected_model == "Gemini-Pro":
