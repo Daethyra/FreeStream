@@ -1803,18 +1803,17 @@ images = ["pillow (>=10.1.0,<11.0.0)"]
 
 [[package]]
 name = "langchain-openai"
-version = "0.0.7"
+version = "0.0.8"
 description = "An integration package connecting OpenAI and LangChain"
 optional = false
 python-versions = ">=3.8.1,<4.0"
 files = [
-    {file = "langchain_openai-0.0.7-py3-none-any.whl", hash = "sha256:43b64806f45c18db710a7847ef8ada95ec8b3af27d3a4af16de8ac75e8b32b01"},
-    {file = "langchain_openai-0.0.7.tar.gz", hash = "sha256:303746637a971b1f32078afb5e97b904fa94d397fbb3b6c1f71d6a5f4edc6ee4"},
+    {file = "langchain_openai-0.0.8-py3-none-any.whl", hash = "sha256:4862fc72cecbee0240aaa6df0234d5893dd30cd33ca23ac5cfdd86c11d2c44df"},
+    {file = "langchain_openai-0.0.8.tar.gz", hash = "sha256:b7aba7fcc52305e78b08197ebc54fc45cc06dbc40ba5b913bc48a22b30a4f5c9"},
 ]
 
 [package.dependencies]
-langchain-core = ">=0.1.26,<0.2.0"
-numpy = ">=1,<2"
+langchain-core = ">=0.1.27,<0.2.0"
 openai = ">=1.10.0,<2.0.0"
 tiktoken = ">=0.5.2,<1"
 
@@ -5594,4 +5593,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "5aeef26e4f37d633c8f1f993e336318a1cd097bd4535073d85f8635a799c03ac"
+content-hash = "ac83f97cc8b36c3b06a0e19cdf6962a574c60cb28fbb061f336cf5d68e58b59b"
