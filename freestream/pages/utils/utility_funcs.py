@@ -197,7 +197,16 @@ class PrintRetrievalHandler(BaseCallbackHandler):
         self.status.update(state="complete")
 
 # Define a function to upscale images using HuggingFace and Torch
-def image_upscaler(image):
+def image_upscaler(image: str) -> Image:
+    """
+    Upscales the input image using the specified model and returns the upscaled image.
+    
+    Parameters:
+    image (str): The file path of the input image.
+    
+    Returns:
+    Image: The upscaled image.
+    """
     
     # Assign the image to a variable
     img = Image.open(image)
@@ -209,6 +218,18 @@ def image_upscaler(image):
                         device="cuda" if torch.cuda.is_available() else "cpu",
                         )
     
+    # Downsize the image via ratio to ensure it can be upscaled.
+    # Otherwise, we run out of memory when a user uploads a huge image.
+    # If the image is greater than 1024 in either dimension, then
+    # the image is downsampled by a factor of 3.
+    if img.width > 1024 or img.height > 1024:
+        logger.info("\nDownsampling image...")
+        img = img.resize((img.width // 1.5, img.height // 1.5))
+    else:
+        img = img
+    
     # Upscale the image
+    logger.info("\nUpscaling image...")
     upscaled_img = upscaler(img)
+    
     return upscaled_img
