@@ -10,6 +10,7 @@ from pages.utils.utility_funcs import (
     StreamHandler,
     PrintRetrievalHandler,
     set_llm,
+    footer
 )
 
 # Initialize LangSmith tracing
@@ -23,9 +24,12 @@ st.set_page_config(page_title="FreeStream: RAGbot", page_icon="🤖")
 st.title("🤖RAGbot")
 st.header(":green[_Retrieval Augmented Generation Chatbot_]", divider="red")
 st.caption(":violet[_Ask Your Documents Questions_]")
-st.sidebar.subheader("__User Panel__")
+# Show footer
+st.markdown(footer, unsafe_allow_html=True)
 
-# Add a way to upload files
+# Add sidebar
+st.sidebar.subheader("__User Panel__")
+# Add file-upload button
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
     type=["pdf", "doc", "docx", "txt"],

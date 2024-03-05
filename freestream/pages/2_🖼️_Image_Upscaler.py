@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from pages.utils.utility_funcs import image_upscaler
+from pages.utils.utility_funcs import image_upscaler, footer
 
 # Set expandable_segments
 os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
@@ -10,6 +10,9 @@ st.set_page_config(page_title="FreeStream: Image Upscaler", page_icon="🖼️")
 st.title("🖼️Image Upscaler")
 st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
 st.caption(":violet[_This page is still under construction. Processing speed and output quality will improve over time._]")
+
+# Show footer
+st.markdown(footer, unsafe_allow_html=True)
 
 # Create the sidebar
 st.sidebar.subheader("__User Panel__")
@@ -32,6 +35,8 @@ st.markdown(
     """
 )
 
+st.divider()
+
 # Create two columns with a single row to organize the UI
 left_image, right_image = st.columns(2)
 # Define a container for image containers
@@ -47,3 +52,4 @@ with image_showcase: # add a try/except block
         # Upscale and show the upscaled image
         with right_image:
             st.image(image_upscaler(uploaded_files)) # Latest uploaded image
+            
