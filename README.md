@@ -85,13 +85,13 @@ FreeStream functions as a chatbot powered by GPT-3.5-Turbo or Gemini-Pro. Upload
 
 The application **MUST**...
 1. Provide a user interface for chatbot interactions and optional file uploads.
-2. Allow users to upscale images (PDF, JPEG, PNG, BMP, SVG) without limits.
-3. Enable users to remove objects from uploaded images. This requires:
-    * Object detection
-    * Object removal
-    * Inpainting
-      * [HuggingFace Resource](https://huggingface.co/docs/diffusers/en/using-diffusers/inpaint)
-      * [HF Mask Maker (Space)](https://huggingface.co/spaces/daethyra/inpaint-mask-maker)
+2. Allow users to upscale images (PDF, JPEG, PNG, ~~BMP~~, ~~SVG~~) without limits.
+3. ~~Enable users to remove objects from uploaded images. This requires:~~
+    * ~~Object detection~~
+    * ~~Object removal~~
+    * ~~Inpainting~~
+      * ~~[HuggingFace Resource](https://huggingface.co/docs/diffusers/en/using-diffusers/inpaint)~~
+      * ~~[HF Mask Maker (Space)](https://huggingface.co/spaces/daethyra/inpaint-mask-maker)~~
 4. Let users generate tasks based on their speech
 5. Include a privacy policy that clearly outlines data usage when interacting with GPT-3.5 or Gemini-Pro
 6. ~~Provide a "Submit Report/Request" form~~
@@ -100,7 +100,7 @@ The application **MUST**...
 
 The application **SHOULD**...
 1. Aim for 24/7 availability.
-2. Use a multi-page Streamlit application structure.
+2. Use a multipage Streamlit application structure.
 3. Prioritize ease of navigation
 4. Feature a visually appealing design.
 5. Position itself as a toolbox for niche professional workflows.
@@ -115,25 +115,25 @@ I'm focusing on overhauling the retrieval prompting logic. I'll remove `Conversa
 
 - [x] Create an RAG chatbot
 - [x] Add Gemini-Pro to the model list
-- [ ] Integrate [`StreamlitCallbackHandler`](https://api.python.langchain.com/en/latest/callbacks/langchain_community.callbacks.streamlit.streamlit_callback_handler.StreamlitCallbackHandler.html "Python API Documentation")
+- [ ] ~~Integrate [`StreamlitCallbackHandler`](https://api.python.langchain.com/en/latest/callbacks/langchain_community.callbacks.streamlit.streamlit_callback_handler.StreamlitCallbackHandler.html "Python API Documentation")~~
 - [ ] Add AI decision making
   - [ ] Implement Corrective-RAG OR Reflective-RAG
 - [x] Turn into a Multi-Page Application (MPA)
   - [x] (Homepage) Add a welcome screen with...
     - [x] a description of the project
     - [ ] ~~table of contents~~
-    - [ ] privacy policy
+    - [x] privacy policy
     - [ ] ~~"Report/Request" form~~
   - [x] (Page) Migrate RAG SPA code
-    - [ ] Add "Temperature" slider
+    - [x] Add "Temperature" slider
   - [ ] (Page) Add a "Task Transcriber"
     - [ ] Microphone input (Record in browser)
     - [ ] Transcribes audio to text
     - [ ] Use LLM to identify each and every task while grouping some to avoid redundance
     - [ ] Generates text within a predefined task template, for each task identified
-  - [ ] (Page) Add "Image Upscaler"
-    - [ ] Multi-file upload
-    - [ ] File type detection
+  - [x] (Page) Add "Image Upscaler"
+    - [x] Multi-file upload
+    - [x] File type detection
   - [ ] (Page) Add "Object Removal" from images
     - [x] Review HuggingFace Spaces's as a potential solution
 - [ ] Add "Contributing" section or file
