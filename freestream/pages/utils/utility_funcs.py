@@ -1,14 +1,17 @@
+import logging
 import os
 import sys
-import logging
 import tempfile
-import torch
+
 import streamlit as st
-from langchain_community.document_loaders import UnstructuredFileLoader
+import torch
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.callbacks.base import BaseCallbackHandler
+from PIL import Image
+from transformers import pipeline
 
 # Set up logging
 logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
@@ -193,3 +196,80 @@ class PrintRetrievalHandler(BaseCallbackHandler):
             self.status.write(f"**Document {idx} from {source}**")
             self.status.markdown(doc.page_content)
         self.status.update(state="complete")
+
+
+# Define a function to upscale images using HuggingFace and Torch
+def image_upscaler(image: str) -> Image:
+    """
+    Upscales the input image using the specified model and returns the upscaled image.
+
+    Parameters:
+    image (str): The file path of the input image.
+
+    Returns:
+    Image: The upscaled image.
+    """
+
+    # Assign the image to a variable
+    img = Image.open(image)
+
+    # Create the upscale pipeline
+    upscaler = pipeline(
+        "image-to-image",
+        model="caidas/swin2SR-classical-sr-x2-64",
+        framework="pt",
+        device="cuda" if torch.cuda.is_available() else "cpu",
+    )
+
+    # Downsize the image via ratio to ensure it can be upscaled.
+    # Otherwise, we run out of memory when a user uploads a huge image.
+    # If the image is greater than 1024 in either dimension, then
+    # the image is downsampled by a factor of 3.
+    if img.width > 512 or img.height > 512:
+        logger.info("\nDownsampling image...")
+        img = img.resize((img.width // 2, img.height // 2))
+    else:
+        img = img
+
+    # Upscale the image
+    logger.info("\nUpscaling image...")
+    upscaled_img = upscaler(img)
+
+    return upscaled_img
+
+
+# Create a footer using community suggestion:
+# https://discuss.streamlit.io/t/streamlit-footer/12181
+footer = """<style>
+a:link , a:visited{
+    color: #ffffff; /* White */
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+a:hover, a:active {
+    color: #cccccc; /* Light grey for hover */
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 55px;
+    width: 100%;
+    background-color: #343a40; /* Dark grey */
+    color: #ffffff; /* White for text */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    z-index: 1000;
+}
+</style>
+<div class="footer">
+<p>Developed with ❤ by <a href="https://www.linkedin.com/in/daemon-carino/" target="_blank">Daethyra</a></p>
+</div>
+"""

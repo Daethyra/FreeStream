@@ -1,16 +1,14 @@
 import os
+
 import streamlit as st
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain_community.chat_message_histories import \
+    StreamlitChatMessageHistory
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
-from langchain.chains import ConversationalRetrievalChain
-from pages.utils.utility_funcs import (
-    configure_retriever,
-    StreamHandler,
-    PrintRetrievalHandler,
-    set_llm,
-)
+from pages.utils.utility_funcs import (PrintRetrievalHandler, StreamHandler,
+                                       configure_retriever, footer, set_llm)
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -23,9 +21,12 @@ st.set_page_config(page_title="FreeStream: RAGbot", page_icon="🤖")
 st.title("🤖RAGbot")
 st.header(":green[_Retrieval Augmented Generation Chatbot_]", divider="red")
 st.caption(":violet[_Ask Your Documents Questions_]")
-st.sidebar.subheader("__User Panel__")
+# Show footer
+st.markdown(footer, unsafe_allow_html=True)
 
-# Add a way to upload files
+# Add sidebar
+st.sidebar.subheader("__User Panel__")
+# Add file-upload button
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
     type=["pdf", "doc", "docx", "txt"],

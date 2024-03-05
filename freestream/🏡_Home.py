@@ -1,5 +1,7 @@
 import streamlit as st
 
+from freestream.pages.utils.utility_funcs import footer
+
 st.set_page_config(page_title="FreeStream: Unlimited Access to AI Tools", page_icon="🏡")
 
 st.title("FreeStream")
@@ -38,38 +40,5 @@ st.markdown(
 
 st.divider()
 
-# Create a footer using community suggestion:
-# https://discuss.streamlit.io/t/streamlit-footer/12181
-footer = """<style>
-a:link , a:visited{
-    color: #ffffff; /* White */
-    background-color: transparent;
-    text-decoration: underline;
-}
-
-a:hover, a:active {
-    color: #cccccc; /* Light grey for hover */
-    background-color: transparent;
-    text-decoration: underline;
-}
-
-.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    height: 55px;
-    width: 100%;
-    background-color: #343a40; /* Dark grey */
-    color: #ffffff; /* White for text */
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-}
-</style>
-<div class="footer">
-<p>Developed with ❤ by <a href="https://www.linkedin.com/in/daemon-carino/" target="_blank">Daethyra</a></p>
-</div>
-"""
+# Show footer
 st.markdown(footer, unsafe_allow_html=True)
