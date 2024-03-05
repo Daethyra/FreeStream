@@ -225,7 +225,7 @@ def image_upscaler(image: str) -> Image:
     # Otherwise, we run out of memory when a user uploads a huge image.
     # If the image is greater than 1024 in either dimension, then
     # the image is downsampled by a factor of 3.
-    if img.width > 1024 or img.height > 1024:
+    if img.width > 512 or img.height > 512:
         logger.info("\nDownsampling image...")
         img = img.resize((img.width // 2, img.height // 2))
     else:
@@ -266,6 +266,7 @@ a:hover, a:active {
     justify-content: center;
     align-items: center;
     padding: 10px;
+    z-index: 1000;
 }
 </style>
 <div class="footer">
