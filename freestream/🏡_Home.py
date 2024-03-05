@@ -1,5 +1,6 @@
-from freestream.pages.utils.utility_funcs import footer
 import streamlit as st
+
+from freestream.pages.utils.utility_funcs import footer
 
 st.set_page_config(page_title="FreeStream: Unlimited Access to AI Tools", page_icon="🏡")
 

@@ -1,17 +1,14 @@
 import os
+
 import streamlit as st
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain_community.chat_message_histories import \
+    StreamlitChatMessageHistory
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
-from langchain.chains import ConversationalRetrievalChain
-from pages.utils.utility_funcs import (
-    configure_retriever,
-    StreamHandler,
-    PrintRetrievalHandler,
-    set_llm,
-    footer
-)
+from pages.utils.utility_funcs import (PrintRetrievalHandler, StreamHandler,
+                                       configure_retriever, footer, set_llm)
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
