@@ -224,7 +224,7 @@ def image_upscaler(image: str) -> Image:
     # the image is downsampled by a factor of 3.
     if img.width > 1024 or img.height > 1024:
         logger.info("\nDownsampling image...")
-        img = img.resize((img.width // 1.5, img.height // 1.5))
+        img = img.resize((img.width // 2, img.height // 2))
     else:
         img = img
     
