@@ -1,7 +1,7 @@
 [tool.poetry]
 
 name = "FreeStream"
-version = "3.2.0"
+version = "3.2.1"
 description = "An effort to give easy access to generative AI."
 authors = ["Daethyra <109057945+Daethyra@users.noreply.github.com>"]
 readme = "README.md"
