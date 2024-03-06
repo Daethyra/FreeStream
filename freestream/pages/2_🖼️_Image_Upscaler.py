@@ -35,7 +35,7 @@ st.markdown(
     
     **Limitations**:
     
-    * Images with a width *or* height greater than 512 will be downsampled by 3/20ths. This limitation will be removed once Real-ESRGAN is implemented.
+    * Images with a width *or* height greater than 128 will be downsampled by 3/20ths. This limitation will be removed once Real-ESRGAN is implemented.
     * The current upscaler problematically generates new content around the edge of the image, especially on the right side.
     
     As with all FreeStream pages, this one's purpose is merely to show you the possibilities without having to sign up or program anything manually. 
