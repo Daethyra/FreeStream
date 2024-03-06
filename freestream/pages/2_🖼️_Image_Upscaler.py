@@ -24,6 +24,7 @@ uploaded_files = st.sidebar.file_uploader(
     "Upload an image",
     type=["png", "jpg", "jpeg"],
     help="Click the button and upload a *single* image.",
+    key="image_to_upscale",
 )
 
 st.divider()
@@ -34,10 +35,11 @@ st.markdown(
     
     **Limitations**:
     
-    * Images with a width *or* height greater than 512 will be downsampled by a factor of 2. This limitation will be removed when a more robust solution is finished.
-    * The current upscaler problematically generates new content around the edge of the image, especially on the right side. However, because the upscaled image retains the center content, the excess content can easily be cropped. Also, since the underlying upscale model is planned for replacement, this is not a main concern.
+    * Images with a width *or* height greater than 128 will be downsampled by 3/20ths. This limitation will be removed once Real-ESRGAN is implemented.
+    * The current upscaler problematically generates new content around the edge of the image, especially on the right side.
     
-    As with all FreeStream pages, this one's purpose is merely to show you the possibilities without having to sign up or program anything manually.
+    As with all FreeStream pages, this one's purpose is merely to show you the possibilities without having to sign up or program anything manually. 
+    Right now, having a page that "works" is an important step in that it lays down the foundation for a robust solution.
     """
 )
 

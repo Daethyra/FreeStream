@@ -225,15 +225,18 @@ def image_upscaler(image: str) -> Image:
     # Otherwise, we run out of memory when a user uploads a huge image.
     # If the image is greater than 1024 in either dimension, then
     # the image is downsampled by a factor of 3.
-    if img.width > 512 or img.height > 512:
+    if img.width > 128 or img.height > 128:
+        st.toast("Downsampling image...", icon="🔨")
         logger.info("\nDownsampling image...")
-        img = img.resize((img.width // 2, img.height // 2))
+        img = img.resize((int(img.width * 0.15), int(img.height * 0.15)))
     else:
         img = img
 
     # Upscale the image
+    st.toast("Upscaling image...", icon="🔨")
     logger.info("\nUpscaling image...")
     upscaled_img = upscaler(img)
+    st.toast("Success!", icon="✅")
 
     return upscaled_img
 
@@ -257,7 +260,7 @@ a:hover, a:active {
     position: fixed;
     left: 0;
     bottom: 0;
-    height: 55px;
+    height: 42px;
     width: 100%;
     background-color: #343a40; /* Dark grey */
     color: #ffffff; /* White for text */
@@ -266,7 +269,7 @@ a:hover, a:active {
     justify-content: center;
     align-items: center;
     padding: 10px;
-    z-index: 1000;
+    z-index: 1; /* Ensure footer is on top of images, but not above other elements */
 }
 </style>
 <div class="footer">

@@ -33,6 +33,10 @@ folderWatchBlacklist = ['.streamlit/']
 # Default: false
 runOnSave = true
 
+# Max size, in megabytes, for files uploaded with the file_uploader.
+# Default: 200
+maxUploadSize = 200
+
 [browser]
 # Whether to send usage statistics to Streamlit.
 # Default: true
