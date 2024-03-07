@@ -1,5 +1,10 @@
 # Multi-LLM Conversation regarding Real-ESRGAN
 
+## Mapping CLI Arguments to Streamlit UI Elements
+
+### Elements
+modelname
+
 ## Phind
 
 To achieve your goal of using Real-ESRGAN as your upscaler within a Streamlit application, and to integrate the functionalities of `@RealESRGANer` into `@2_🖼️_Image_Upscaler.py`, let's break down the steps and requirements.
@@ -83,7 +88,7 @@ For each CLI argument, you'll create a corresponding Streamlit UI element. Here'
 - **Output Folder (`-o`, `--output`):** Use a text input field for the output directory path.
 - **Denoise Strength (`-dn`, `--denoise_strength`):** Use a slider to select the denoise strength.
 - **Final Upscaling Scale (`-s`, `--outscale`):** Use a dropdown menu to select the upscaling scale.
-- **Model Path (`--model_path`):** Use a text input field for the model path.
+- **Model Path (`--model_path`):** This should be automatically generated based on the chosen model and whether or not it has already been downloaded.
 - **Suffix (`--suffix`):** Use a text input field for the suffix.
 - **Tile Size (`-t`, `--tile`):** Use a slider to select the tile size.
 - **Tile Padding (`--tile_pad`):** Use a slider to select the tile padding.
@@ -92,7 +97,7 @@ For each CLI argument, you'll create a corresponding Streamlit UI element. Here'
 - **FP32 Precision (`--fp32`):** Use a checkbox to enable or disable FP32 precision.
 - **Alpha Upsampler (`--alpha_upsampler`):** Use a dropdown menu to select the alpha upsampler.
 - **Image Extension (`--ext`):** Use a dropdown menu to select the image extension.
-- **GPU ID (`-g`, `--gpu-id`):** Use a dropdown menu to select the GPU ID.
+- **GPU ID (`-g`, `--gpu-id`):** Hard code GPU off because Streamlit Community Cloud doesn't offer GPU support.
 
 ### Passing Parameters to a Function or Class Object
 
