@@ -299,7 +299,7 @@ a:hover, a:active {
     position: fixed;
     left: 0;
     bottom: 0;
-    height: 42px;
+    height: 40px;
     width: 100%;
     background-color: #343a40; /* Dark grey */
     color: #ffffff; /* White for text */
@@ -309,6 +309,10 @@ a:hover, a:active {
     align-items: center;
     padding: 10px;
     z-index: 1; /* Ensure footer is on top of images, but not above other elements */
+}
+
+.footer p {
+    margin: 0;
 }
 </style>
 <div class="footer">
