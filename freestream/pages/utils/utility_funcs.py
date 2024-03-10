@@ -85,22 +85,22 @@ class RetrieveDocuments:
         Returns:
             Retriever: A configured retriever for retrieving documents based on embeddings.
         """
-        
+
         # Load documents
         _self.load_documents()
-        
+
         # Write a line to split the documents
         chunks = _self.text_splitter.split_documents(_self.docs)
-        
+
         # Embed the chunks into a vector database
         _self.vectordb = FAISS.from_documents(chunks, _self.embeddings)
-        
+
         # Create a retriever
         _self.retriever = _self.vectordb.as_retriever(
             search_type="mmr",
             search_kwargs={"k": 5, "fetch_k": 12},
         )
-        
+
         return _self.retriever
 
 
