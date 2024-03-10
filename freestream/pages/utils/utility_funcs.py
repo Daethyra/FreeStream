@@ -14,57 +14,94 @@ from PIL import Image
 from transformers import pipeline
 
 # Set up logging
-logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
 
 
-@st.cache_resource(ttl="1h")  # Cache the resource
-def configure_retriever(uploaded_files):
+class RetrieveDocuments:
     """
-    This function configures and returns a retriever object for a given list of uploaded files.
+    A class for retrieving and managing documents for processing.
 
-    The function performs the following steps:
-    1. Reads the documents from the uploaded files.
-    2. Splits the documents into smaller chunks.
-    3. Creates embeddings for each chunk using the HuggingFace's MiniLM model.
-    4. Stores the embeddings in a FAISS vector database.
-    5. Defines a retriever object that uses the FAISS vector database to search for similar documents.
+    This class is responsible for loading documents from uploaded files, splitting them into chunks,
+    generating embeddings for these chunks, and configuring a retriever for efficient document retrieval.
 
-    Args:
-        uploaded_files (list): A list of Streamlit uploaded file objects.
-
-    Returns:
-        retriever (Retriever): A retriever object that can be used to search for similar documents.
+    Attributes:
+        uploaded_files (list): A list of uploaded files to be processed.
+        docs (list): A list of documents loaded from the uploaded files.
+        temp_dir (TemporaryDirectory): A temporary directory for storing uploaded files.
+        text_splitter (RecursiveCharacterTextSplitter): An instance of a text splitter for dividing documents into chunks.
+        vectordb (FAISS): A vector database for storing embeddings and facilitating document retrieval.
+        retriever (Retriever): A configured retriever for retrieving documents based on embeddings.
+        embeddings (HuggingFaceEmbeddings): An instance for generating embeddings for document chunks.
     """
-    # Read documents
-    docs = []
-    temp_dir = tempfile.TemporaryDirectory()
-    for file in uploaded_files:
-        temp_filepath = os.path.join(temp_dir.name, file.name)
-        with open(temp_filepath, "wb") as f:
-            f.write(file.getvalue())
-        loader = UnstructuredFileLoader(temp_filepath)
-        docs.extend(loader.load())
-        logger.info("Loaded document: %s", file.name)
 
-    # Split documents
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=75)
-    chunks = text_splitter.split_documents(docs)
+    def __init__(self, uploaded_files):
+        """
+        Initialize the RetrieveDocuments class with a list of uploaded files.
 
-    # Create embeddings and store in vectordb
-    # quickly create a GPU detection line for model_kwargs
-    model_kwargs = {"device": "cuda" if torch.cuda.is_available() else "cpu"}
-    embeddings = HuggingFaceEmbeddings(
-        model_name="all-MiniLM-L6-v2", model_kwargs=model_kwargs
-    )
-    vectordb = FAISS.from_documents(chunks, embeddings)
+        Args:
+            uploaded_files (list): A list of uploaded files to be processed.
+        """
+        self.uploaded_files = uploaded_files
+        self.docs = []
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1200, chunk_overlap=0
+        )
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name="all-MiniLM-L6-v2",
+            model_kwargs={"device": "cuda" if torch.cuda.is_available() else "cpu"},
+        )
+        self.vectordb = None
+        self.retriever = None
 
-    # Define retriever
-    retriever = vectordb.as_retriever(
-        search_type="mmr", search_kwargs={"k": 3, "fetch_k": 7}
-    )
+    def load_documents(self):
+        """
+        Load documents from the uploaded files into the `docs` attribute.
 
-    return retriever
+        This method iterates over the uploaded files, writes them to a temporary directory,
+        and then loads the documents using an UnstructuredFileLoader. The loaded documents are
+        stored in the `docs` attribute.
+        """
+        for file in self.uploaded_files:
+            temp_filepath = os.path.join(self.temp_dir.name, file.name)
+            with open(temp_filepath, "wb") as f:
+                f.write(file.getvalue())
+            loader = UnstructuredFileLoader(temp_filepath)
+            self.docs.extend(loader.load())
+            logger.info("Loaded document: %s", file.name)
+
+    @st.cache_resource(ttl="1h")
+    def configure_retriever(_self):
+        """
+        Configure the retriever by creating a vector database from the provided chunks and embeddings.
+
+        This method first splits the loaded documents into chunks using the text splitter.
+        It then generates embeddings for these chunks and creates a vector database (FAISS)
+        from these chunks and embeddings.
+        Finally, it configures a retriever using the vector database and returns the
+        configured retriever.
+
+        Returns:
+            Retriever: A configured retriever for retrieving documents based on embeddings.
+        """
+        
+        # Load documents
+        _self.load_documents()
+        
+        # Write a line to split the documents
+        chunks = _self.text_splitter.split_documents(_self.docs)
+        
+        # Embed the chunks into a vector database
+        _self.vectordb = FAISS.from_documents(chunks, _self.embeddings)
+        
+        # Create a retriever
+        _self.retriever = _self.vectordb.as_retriever(
+            search_type="mmr",
+            search_kwargs={"k": 5, "fetch_k": 12},
+        )
+        
+        return _self.retriever
 
 
 # Define a callback function for selecting a model
