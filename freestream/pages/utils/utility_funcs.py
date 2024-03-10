@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 import tempfile
+from typing import List
 
 import streamlit as st
 import torch
@@ -10,6 +11,7 @@ from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.callbacks.base import BaseCallbackHandler
+from langchain_core.documents import Document
 from PIL import Image
 from transformers import pipeline
 
@@ -35,7 +37,7 @@ class RetrieveDocuments:
         embeddings (HuggingFaceEmbeddings): An instance for generating embeddings for document chunks.
     """
 
-    def __init__(self, uploaded_files):
+    def __init__(self, uploaded_files: List[Document]):
         """
         Initialize the RetrieveDocuments class with a list of uploaded files.
 
@@ -63,13 +65,13 @@ class RetrieveDocuments:
         and then loads the documents using an UnstructuredFileLoader. The loaded documents are
         stored in the `docs` attribute.
         """
-        for file in self.uploaded_files:
-            temp_filepath = os.path.join(self.temp_dir.name, file.name)
+        for document in self.uploaded_files:
+            temp_filepath = os.path.join(self.temp_dir.name, document.name)
             with open(temp_filepath, "wb") as f:
-                f.write(file.getvalue())
+                f.write(document.getvalue())
             loader = UnstructuredFileLoader(temp_filepath)
             self.docs.extend(loader.load())
-            logger.info("Loaded document: %s", file.name)
+            logger.info("Loaded document: %s", document.name)
 
     @st.cache_resource(ttl="1h")
     def configure_retriever(_self):
