@@ -3,12 +3,16 @@ import os
 import streamlit as st
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
-from langchain_community.chat_message_histories import \
-    StreamlitChatMessageHistory
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
-from pages.utils.utility_funcs import (PrintRetrievalHandler, StreamHandler,
-                                       configure_retriever, footer, set_llm)
+from pages.utils.utility_funcs import (
+    PrintRetrievalHandler,
+    StreamHandler,
+    RetrieveDocuments,
+    footer,
+    set_llm,
+)
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -37,7 +41,8 @@ if not uploaded_files:
     st.info("Please upload documents to continue.")
     st.stop()
 
-retriever = configure_retriever(uploaded_files)
+retrieve_docs = RetrieveDocuments(uploaded_files)
+retriever = retrieve_docs.configure_retriever()
 
 # Add temperature header
 temperature_header = st.sidebar.markdown(
