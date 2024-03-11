@@ -55,7 +55,7 @@ temperature_slider = st.sidebar.slider(
     label=""":orange[Set LLM Temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
     min_value=0.0,
     max_value=1.0,
-    value=0.7,
+    value=0,
     step=0.05,
     key="llm_temperature",
 )
@@ -73,7 +73,7 @@ model_names = {
         openai_api_key=st.secrets.OPENAI.openai_api_key,  # Set the OpenAI API key from the Streamlit secrets manager
         temperature=temperature_slider,  # Set the temperature for the model's responses using the sidebar slider
         streaming=True,  # Enable streaming responses for the model
-        max_tokens=512,  # Set the maximum number of tokens for the model's responses
+        max_tokens=8192,  # Set the maximum number of tokens for the model's responses
         max_retries=1,  # Set the maximum number of retries for the model
     ),
     "Gemini-Pro": ChatGoogleGenerativeAI(
@@ -81,9 +81,9 @@ model_names = {
         google_api_key=st.secrets.GOOGLE.google_api_key,
         temperature=temperature_slider,
         top_k=50,
-        top_p=1,
+        top_p=0.7,
         convert_system_message_to_human=True,
-        max_output_tokens=512,
+        max_output_tokens=8192,
         max_retries=1,
     ),
 }
