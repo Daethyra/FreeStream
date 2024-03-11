@@ -127,9 +127,6 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
     # Display assistant response
     with st.chat_message("assistant"):
-        # Check for the presence of the "messages" key in session state
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
 
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
