@@ -10,9 +10,9 @@ from pages.utils.utility_funcs import (
     PrintRetrievalHandler,
     StreamHandler,
     RetrieveDocuments,
-    footer,
     set_llm,
 )
+from pages.utils.styles import footer
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
