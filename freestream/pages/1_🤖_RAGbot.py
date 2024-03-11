@@ -108,15 +108,13 @@ qa_chain = ConversationalRetrievalChain.from_llm(
     llm, retriever=retriever, memory=memory, verbose=True
 )
 
-# Create a button to clear message history
-st.sidebar.divider()  # Divder accentuation
-st.sidebar.button(
-    label="Clear message history",
-    on_click=clear_messages(msgs),
-    help="Erase all messages in the conversation history.",
-    key="clear_messages_button",
-    use_container_width=True,
-)
+# if the length of messages is 0, or when the user \
+# clicks the clear button,
+# show a default message from the AI
+if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
+    msgs.clear()
+    # show a default message from the AI
+    msgs.add_ai_message("How can I help you?")
 
 # Display coversation history window
 avatars = {"human": "user", "ai": "assistant"}
@@ -129,14 +127,13 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
     # Display assistant response
     with st.chat_message("assistant"):
+        # Check for the presence of the "messages" key in session state
+        if "messages" not in st.session_state:
+            st.session_state.messages = []
 
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
         response = qa_chain.run(
             user_query, callbacks=[retrieval_handler, stream_handler]
         )
-        # Force Gemini's message to display
-        # I'm unsure why it doesn't work like GPT-3.5
-        if selected_model == "Gemini-Pro":
-            st.write(response)
         st.toast("Success!", icon="✅")
