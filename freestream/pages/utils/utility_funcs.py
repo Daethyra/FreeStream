@@ -12,6 +12,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.callbacks.base import BaseCallbackHandler
 from langchain_core.documents import Document
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from PIL import Image
 from transformers import pipeline
 
@@ -126,6 +127,14 @@ def set_llm(selected_model: str, model_names: dict):
         )
         # Display a more informative error message to the user
         st.error(f"Failed to change model! Error: {e}\n{selected_model}")
+
+
+# Define a callback function for clearing the conversation history
+def clear_messages(msgs: StreamlitChatMessageHistory):
+    """
+    Clears the conversation history in the user interface.
+    """
+    msgs.clear()
 
 
 class StreamHandler(BaseCallbackHandler):
