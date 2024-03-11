@@ -38,14 +38,13 @@ class RetrieveDocuments:
         embeddings (HuggingFaceEmbeddings): An instance for generating embeddings for document chunks.
     """
 
-    def __init__(self, uploaded_files: List[Document]):
+    def __init__(self):
         """
         Initialize the RetrieveDocuments class with a list of uploaded files.
 
         Args:
             uploaded_files (list): A list of uploaded files to be processed.
         """
-        self.uploaded_files = uploaded_files
         self.docs = []
         self.temp_dir = tempfile.TemporaryDirectory()
         self.text_splitter = RecursiveCharacterTextSplitter(
@@ -55,27 +54,9 @@ class RetrieveDocuments:
             model_name="all-MiniLM-L6-v2",
             model_kwargs={"device": "cuda" if torch.cuda.is_available() else "cpu"},
         )
-        self.vectordb = None
-        self.retriever = None
-
-    def load_documents(self):
-        """
-        Load documents from the uploaded files into the `docs` attribute.
-
-        This method iterates over the uploaded files, writes them to a temporary directory,
-        and then loads the documents using an UnstructuredFileLoader. The loaded documents are
-        stored in the `docs` attribute.
-        """
-        for document in self.uploaded_files:
-            temp_filepath = os.path.join(self.temp_dir.name, document.name)
-            with open(temp_filepath, "wb") as f:
-                f.write(document.getvalue())
-            loader = UnstructuredFileLoader(temp_filepath)
-            self.docs.extend(loader.load())
-            logger.info("Loaded document: %s", document.name)
 
     @st.cache_resource(ttl="1h")
-    def configure_retriever(_self):
+    def configure_retriever(_self, uploaded_files: List[Document]):
         """
         Configure the retriever by creating a vector database from the provided chunks and embeddings.
 
@@ -89,22 +70,29 @@ class RetrieveDocuments:
             Retriever: A configured retriever for retrieving documents based on embeddings.
         """
 
-        # Load documents
-        _self.load_documents()
+        # Read documents
+        docs = []
+        temp_dir = _self.temp_dir
+        for file in uploaded_files:
+            temp_filepath = os.path.join(temp_dir.name, file.name)
+            with open(temp_filepath, "wb") as f:
+                f.write(file.getvalue())
+            loader = UnstructuredFileLoader(temp_filepath)
+            docs.extend(loader.load())
+            logger.info("Loaded document: %s", file.name)
 
-        # Write a line to split the documents
-        chunks = _self.text_splitter.split_documents(_self.docs)
+        # Split documents
+        text_splitter = _self.text_splitter
+        chunks = text_splitter.split_documents(docs)
+        
+        vectordb = FAISS.from_documents(chunks, _self.embeddings)
 
-        # Embed the chunks into a vector database
-        _self.vectordb = FAISS.from_documents(chunks, _self.embeddings)
-
-        # Create a retriever
-        _self.retriever = _self.vectordb.as_retriever(
-            search_type="mmr",
-            search_kwargs={"k": 5, "fetch_k": 12},
+        # Define retriever
+        retriever = vectordb.as_retriever(
+            search_type="mmr", search_kwargs={"k": 3, "fetch_k": 7}
         )
 
-        return _self.retriever
+        return retriever
 
 
 # Define a callback function for selecting a model

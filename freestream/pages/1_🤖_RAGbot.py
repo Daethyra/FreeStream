@@ -42,8 +42,7 @@ if not uploaded_files:
     st.info("Please upload documents to continue.")
     st.stop()
 
-retrieve_docs = RetrieveDocuments(uploaded_files)
-retriever = retrieve_docs.configure_retriever()
+retriever = RetrieveDocuments().configure_retriever(uploaded_files)
 
 # Add temperature header
 temperature_header = st.sidebar.markdown(
@@ -130,9 +129,6 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
     # Display assistant response
     with st.chat_message("assistant"):
-        # Check for the presence of the "messages" key in session state
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
 
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
