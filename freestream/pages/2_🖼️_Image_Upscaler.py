@@ -1,19 +1,15 @@
 import os
 
 import streamlit as st
-from pages.utils.utility_funcs import image_upscaler
+from pages.utils.utility_funcs import download_model, upscaler_model_options
 from pages.utils.styles import footer
 
-# Set expandable_segments
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 # Initialize page config
 st.set_page_config(page_title="FreeStream: Real-ESRGAN", page_icon="🖼️")
 st.title("🖼️Real-ESRGAN")
 st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
-st.caption(
-    ":violet[_This page is still under construction. Processing speed and output quality will improve over time._]"
-)
+st.caption(":violet[_Placeholder._]")
 
 # Show footer
 st.markdown(footer, unsafe_allow_html=True)
@@ -30,6 +26,13 @@ uploaded_files = st.sidebar.file_uploader(
 
 st.divider()
 # Body description
+# Create a selectbox for model selection and download the selected model if not present
+upscaler_model = st.selectbox("Select a model", list(upscaler_model_options.keys()))
+
+if st.button("Download Model"):
+    with st.container():
+        download_model(upscaler_model, upscaler_model_options[upscaler_model])
+
 
 st.divider()
 
@@ -43,11 +46,11 @@ with image_showcase:
         if uploaded_files:
             # Show the uploaded image
             with left_image:
-                st.image(uploaded_files) # Latest uploaded image
+                st.image(uploaded_files)  # Latest uploaded image
 
             # Upscale and show the upscaled image
-            with right_image:
-                upscaled_image = image_upscaler(uploaded_files)
-                st.image(upscaled_image) # Latest uploaded image
+            # with right_image:
+            #    upscaled_image = image_upscaler(uploaded_files)
+            #    st.image(upscaled_image) # Latest uploaded image
     except Exception as e:
         st.error(f"An error occurred while processing the image: {e}")

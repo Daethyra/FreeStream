@@ -1,4 +1,5 @@
 import logging
+import requests
 import os
 import sys
 import tempfile
@@ -119,16 +120,17 @@ def set_llm(selected_model: str, model_names: dict):
 
 # Dictionary of model options and their corresponding file URLs
 upscaler_model_options = {
-    'RealESRGAN_x4plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth',
-    'RealESRNet_x4plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth',
-    'RealESRGAN_x4plus_anime_6B': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth',
-    'RealESRGAN_x2plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth',
-    'realesr-animevideov3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth',
-    'realesr-general-x4v3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
+    "RealESRGAN_x4plus": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth",
+    "RealESRNet_x4plus": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth",
+    "RealESRGAN_x4plus_anime_6B": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
+    "RealESRGAN_x2plus": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth",
+    "realesr-animevideov3": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth",
+    "realesr-general-x4v3": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth",
 }
 
+
 # Define a function to download a model
-def download_model(model_name: str, file_url: str, models_dir: str = 'models'):
+def download_model(model_name: str, file_url: str, models_dir: str = "models"):
     """
     Downloads a specified model from a given URL if it's not already present in the local directory.
 
@@ -139,26 +141,26 @@ def download_model(model_name: str, file_url: str, models_dir: str = 'models'):
     Returns:
     - None
     """
-    
+
     # Check if the models directory exists. If it doesn't, create it.
     if not os.path.exists(models_dir):
         os.makedirs(models_dir)
-    
+
     # Construct the local file path for the model.
-    model_path = os.path.join(models_dir, f'{model_name}.pth')
-    
+    model_path = os.path.join(models_dir, f"{model_name}.pth")
+
     # Check if the model file already exists in the local directory.
     if not os.path.isfile(model_path):
         # Use st.spinner to show a spinner while the download is in progress.
         with st.spinner(f"Downloading {model_name}..."):
             # Send a GET request to the provided file URL to download the model file.
             response = requests.get(file_url)
-            
+
             # Open the local file path in write-binary mode ('wb').
-            with open(model_path, 'wb') as f:
+            with open(model_path, "wb") as f:
                 # Write the content of the response to the local file.
                 f.write(response.content)
-        
+
         # Use st.success to show a success message once the download is complete.
         st.toast(f"{model_name} downloaded successfully!", icon="✅")
 
@@ -274,46 +276,3 @@ class PrintRetrievalHandler(BaseCallbackHandler):
             self.status.write(f"**Document {idx} from {source}**")
             self.status.markdown(doc.page_content)
         self.status.update(state="complete")
-
-
-# Define a function to upscale images using HuggingFace and Torch
-def image_upscaler(image: str) -> Image:
-    """
-    Upscales the input image using the specified model and returns the upscaled image.
-
-    Parameters:
-    image (str): The file path of the input image.
-
-    Returns:
-    Image: The upscaled image.
-    """
-
-    # Assign the image to a variable
-    img = Image.open(image)
-
-    # Create the upscale pipeline
-    upscaler = pipeline(
-        "image-to-image",
-        model="caidas/swin2SR-classical-sr-x2-64",
-        framework="pt",
-        device="cuda" if torch.cuda.is_available() else "cpu",
-    )
-
-    # Downsize the image via ratio to ensure it can be upscaled.
-    # Otherwise, we run out of memory when a user uploads a huge image.
-    # If the image is greater than 1024 in either dimension, then
-    # the image is downsampled by a factor of 3.
-    if img.width > 128 or img.height > 128:
-        st.toast("Downsampling image...", icon="🔨")
-        logger.info("\nDownsampling image...")
-        img = img.resize((int(img.width * 0.15), int(img.height * 0.15)))
-    else:
-        img = img
-
-    # Upscale the image
-    st.toast("Upscaling image...", icon="🔨")
-    logger.info("\nUpscaling image...")
-    upscaled_img = upscaler(img)
-    st.toast("Success!", icon="✅")
-
-    return upscaled_img
