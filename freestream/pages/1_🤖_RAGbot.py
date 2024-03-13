@@ -85,14 +85,14 @@ model_names = {
         max_tokens=4096,
         max_retries=1,
     ),
-    #"Claude: Haiku": ChatAnthropic(
+    # "Claude: Haiku": ChatAnthropic(
     #    model="",
     #    anthropic_api_key=st.secrets.ANTHROPIC.anthropic_api_key,
     #    temperature=temperature_slider,
     #    streaming=True,
     #    max_tokens=4096,
     #    max_retries=1,
-    #),
+    # ),
     "Claude: Sonnet": ChatAnthropic(
         model="claude-3-sonnet-20240229",
         anthropic_api_key=st.secrets.ANTHROPIC.anthropic_api_key,
