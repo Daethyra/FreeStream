@@ -48,7 +48,7 @@ class RetrieveDocuments:
         self.docs = []
         self.temp_dir = tempfile.TemporaryDirectory()
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1200, chunk_overlap=0
+            chunk_size=2500, chunk_overlap=50
         )
         self.embeddings = HuggingFaceEmbeddings(
             model_name="all-MiniLM-L6-v2",
@@ -71,7 +71,7 @@ class RetrieveDocuments:
         """
 
         # Read documents
-        docs = []
+        docs = _self.docs
         temp_dir = _self.temp_dir
         for file in uploaded_files:
             temp_filepath = os.path.join(temp_dir.name, file.name)
@@ -84,7 +84,7 @@ class RetrieveDocuments:
         # Split documents
         text_splitter = _self.text_splitter
         chunks = text_splitter.split_documents(docs)
-        
+
         vectordb = FAISS.from_documents(chunks, _self.embeddings)
 
         # Define retriever

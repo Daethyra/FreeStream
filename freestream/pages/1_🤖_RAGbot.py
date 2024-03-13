@@ -5,6 +5,7 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
 from pages.utils.utility_funcs import (
     PrintRetrievalHandler,
@@ -35,7 +36,7 @@ st.sidebar.subheader("__User Panel__")
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
     type=["pdf", "doc", "docx", "txt"],
-    help="Types supported: pdf, doc, docx, txt",
+    help="Types supported: pdf, doc, docx, txt \n\nConsider the size of your files before you upload. Processing speed varies by server load.",
     accept_multiple_files=True,
 )
 if not uploaded_files:
@@ -75,6 +76,36 @@ model_names = {
         streaming=True,  # Enable streaming responses for the model
         max_tokens=4096,  # Set the maximum number of tokens for the model's responses
         max_retries=1,  # Set the maximum number of retries for the model
+    ),
+    "GPT-4 Turbo": ChatOpenAI(
+        model="gpt-4-0125-preview",
+        openai_api_key=st.secrets.OPENAI.openai_api_key,
+        temperature=temperature_slider,
+        streaming=True,
+        max_tokens=4096,
+        max_retries=1,
+    ),
+    #"Claude: Haiku": ChatAnthropic(
+    #    model="",
+    #    anthropic_api_key=st.secrets.ANTHROPIC.anthropic_api_key,
+    #    temperature=temperature_slider,
+    #    streaming=True,
+    #    max_tokens=4096,
+    #    max_retries=1,
+    #),
+    "Claude: Sonnet": ChatAnthropic(
+        model="claude-3-sonnet-20240229",
+        anthropic_api_key=st.secrets.ANTHROPIC.anthropic_api_key,
+        temperature=temperature_slider,
+        streaming=True,
+        max_tokens=4096,
+    ),
+    "Claude: Opus": ChatAnthropic(
+        model="	claude-3-opus-20240229",
+        anthropic_api_key=st.secrets.ANTHROPIC.anthropic_api_key,
+        temperature=temperature_slider,
+        streaming=True,
+        max_tokens=4096,
     ),
     "Gemini-Pro": ChatGoogleGenerativeAI(
         model="gemini-pro",
@@ -127,10 +158,11 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
     # Display assistant response
     with st.chat_message("assistant"):
-
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
         response = qa_chain.run(
             user_query, callbacks=[retrieval_handler, stream_handler]
         )
-        st.toast("Success!", icon="✅")
+        # Force print Gemini's response
+        if selected_model == "Gemini-Pro":
+            st.write(response)
