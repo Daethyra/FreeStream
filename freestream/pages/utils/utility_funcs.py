@@ -14,8 +14,6 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.callbacks.base import BaseCallbackHandler
 from langchain_core.documents import Document
-from PIL import Image
-from transformers import pipeline
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
