@@ -8,8 +8,8 @@ from pages.utils.styles import footer
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 # Initialize page config
-st.set_page_config(page_title="FreeStream: Image Upscaler", page_icon="🖼️")
-st.title("🖼️Image Upscaler")
+st.set_page_config(page_title="FreeStream: Real-ESRGAN", page_icon="🖼️")
+st.title("🖼️Real-ESRGAN")
 st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
 st.caption(
     ":violet[_This page is still under construction. Processing speed and output quality will improve over time._]"
@@ -29,20 +29,7 @@ uploaded_files = st.sidebar.file_uploader(
 )
 
 st.divider()
-# Create a body paragraph
-st.markdown(
-    """
-    Although the page is still being worked on, you're encouraged to test out the current upscaler, [Swin2SR](https://huggingface.co/caidas/swin2SR-classical-sr-x2-64).
-    
-    **Limitations**:
-    
-    * Images with a width *or* height greater than 128 will be downsampled by 3/20ths. This limitation will be removed once Real-ESRGAN is implemented.
-    * The current upscaler problematically generates new content around the edge of the image, especially on the right side.
-    
-    As with all FreeStream pages, this one's purpose is merely to show you the possibilities without having to sign up or program anything manually. 
-    Right now, having a page that "works" is an important step in that it lays down the foundation for a robust solution.
-    """
-)
+# Body description
 
 st.divider()
 
@@ -51,12 +38,16 @@ left_image, right_image = st.columns(2)
 # Define a container for image containers
 image_showcase = st.container()  # holds other containers
 
-with image_showcase:  # add a try/except block
-    if uploaded_files:
-        # Show the uploaded image
-        with left_image:
-            st.image(uploaded_files)  # Latest uploaded image
+with image_showcase:
+    try:
+        if uploaded_files:
+            # Show the uploaded image
+            with left_image:
+                st.image(uploaded_files) # Latest uploaded image
 
-        # Upscale and show the upscaled image
-        with right_image:
-            st.image(image_upscaler(uploaded_files))  # Latest uploaded image
+            # Upscale and show the upscaled image
+            with right_image:
+                upscaled_image = image_upscaler(uploaded_files)
+                st.image(upscaled_image) # Latest uploaded image
+    except Exception as e:
+        st.error(f"An error occurred while processing the image: {e}")
