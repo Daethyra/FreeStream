@@ -1,9 +1,8 @@
 import os
 
 import streamlit as st
-from pages.utils.utility_funcs import download_model, upscaler_model_options
 from pages.utils.styles import footer
-
+from pages.utils.utility_funcs import download_model, upscaler_model_options
 
 # Initialize page config
 st.set_page_config(page_title="FreeStream: Real-ESRGAN", page_icon="🖼️")

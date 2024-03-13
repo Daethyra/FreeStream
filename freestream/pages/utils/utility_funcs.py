@@ -1,19 +1,20 @@
 import logging
-import requests
 import os
 import sys
 import tempfile
 from typing import List
 
+import requests
 import streamlit as st
 import torch
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.chat_message_histories import \
+    StreamlitChatMessageHistory
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.callbacks.base import BaseCallbackHandler
 from langchain_core.documents import Document
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from PIL import Image
 from transformers import pipeline
 
@@ -130,7 +131,7 @@ upscaler_model_options = {
 
 
 # Define a function to download a model
-def download_model(model_name: str, file_url: str, models_dir: str = "models"):
+def download_model(model_name: str, file_url: str, models_dir: str = "freestream/realesrgan/models"):
     """
     Downloads a specified model from a given URL if it's not already present in the local directory.
 
