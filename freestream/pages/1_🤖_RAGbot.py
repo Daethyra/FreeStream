@@ -35,7 +35,7 @@ st.sidebar.subheader("__User Panel__")
 uploaded_files = st.sidebar.file_uploader(
     label="Upload a PDF or text file",
     type=["pdf", "doc", "docx", "txt"],
-    help="Types supported: pdf, doc, docx, txt",
+    help="Types supported: pdf, doc, docx, txt \n\nConsider the size of your files before you upload. Processing speed varies by server load.",
     accept_multiple_files=True,
 )
 if not uploaded_files:
@@ -127,7 +127,6 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
     # Display assistant response
     with st.chat_message("assistant"):
-
         retrieval_handler = PrintRetrievalHandler(st.container())
         stream_handler = StreamHandler(st.empty())
         response = qa_chain.run(
