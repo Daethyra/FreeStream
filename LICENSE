@@ -1,6 +1,8 @@
 FreeStream | Free AI tools for everyday people
 Copyright (C) 2024 Daethyra (Daemon Carino)
 
+FreeStream is licensed under the terms of the GNU Affero General Public License, however the included code of the Real-ESRGAN respository at https://github.com/xinntao/Real-ESRGAN is licensed under the terms of its own BSD 3-Clause license, https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE.
+
 This program is free software: 
 you can redistribute it and/or modify it under the terms of the 
 GNU Affero General Public License as published by the Free Software 
