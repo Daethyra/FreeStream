@@ -117,7 +117,18 @@ def set_llm(selected_model: str, model_names: dict):
         st.error(f"Failed to change model! Error: {e}\n{selected_model}")
 
 
-def download_model(model_name, file_url):
+# Dictionary of model options and their corresponding file URLs
+upscaler_model_options = {
+    'RealESRGAN_x4plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth',
+    'RealESRNet_x4plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth',
+    'RealESRGAN_x4plus_anime_6B': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth',
+    'RealESRGAN_x2plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth',
+    'realesr-animevideov3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth',
+    'realesr-general-x4v3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
+}
+
+# Define a function to download a model
+def download_model(model_name: str, file_url: str, models_dir: str = 'models'):
     """
     Downloads a specified model from a given URL if it's not already present in the local directory.
 
@@ -128,8 +139,6 @@ def download_model(model_name, file_url):
     Returns:
     - None
     """
-    # Define the directory where models will be stored.
-    models_dir = 'models'
     
     # Check if the models directory exists. If it doesn't, create it.
     if not os.path.exists(models_dir):
@@ -151,13 +160,11 @@ def download_model(model_name, file_url):
                 f.write(response.content)
         
         # Use st.success to show a success message once the download is complete.
-        st.success(f"{model_name} downloaded successfully!")
-        
-        # Optionally, use st.toast to display a toast notification for additional feedback.
-        st.toast(f"{model_name} has been downloaded and is ready to use.", duration=3)
+        st.toast(f"{model_name} downloaded successfully!", icon="✅")
+
     else:
         # If the model file already exists, inform the user.
-        st.info(f"{model_name} is already downloaded and ready to use.")
+        st.toast(f"{model_name} is already downloaded and ready to use.")
 
 
 class StreamHandler(BaseCallbackHandler):
