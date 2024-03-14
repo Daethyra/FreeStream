@@ -28,7 +28,6 @@ class RetrieveDocuments:
     generating embeddings for these chunks, and configuring a retriever for efficient document retrieval.
 
     Attributes:
-        uploaded_files (list): A list of uploaded files to be processed.
         docs (list): A list of documents loaded from the uploaded files.
         temp_dir (TemporaryDirectory): A temporary directory for storing uploaded files.
         text_splitter (RecursiveCharacterTextSplitter): An instance of a text splitter for dividing documents into chunks.
@@ -42,7 +41,7 @@ class RetrieveDocuments:
         Initialize the RetrieveDocuments class with a list of uploaded files.
 
         Args:
-            uploaded_files (list): A list of uploaded files to be processed.
+            None
         """
         self.docs = []
         self.temp_dir = tempfile.TemporaryDirectory()
@@ -64,6 +63,9 @@ class RetrieveDocuments:
         from these chunks and embeddings.
         Finally, it configures a retriever using the vector database and returns the
         configured retriever.
+        
+        Args:
+            uploaded_files (List[Document]): A list of documents loaded from the uploaded files.
 
         Returns:
             Retriever: A configured retriever for retrieving documents based on embeddings.
