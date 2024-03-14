@@ -26,7 +26,7 @@ Try out different AI tools.
 
 ## Quickstart
 
-This app is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 3.0.0")
+This app is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 4.0.0")
 
 ### Installation
 
@@ -86,7 +86,7 @@ FreeStream functions as a chatbot powered by GPT-3.5-Turbo or Gemini-Pro. Upload
 
 The application **MUST**...
 1. Provide a user interface for chatbot interactions and optional file uploads.
-2. Allow users to upscale images (PDF, JPEG, PNG, ~~BMP~~, ~~SVG~~) without limits.
+2. Allow users to upscale images (PDF, JPEG, PNG) without limits.
 3. Let users generate tasks based on their speech
 4. Include a privacy policy that clearly outlines data usage when interacting with GPT-3.5 or Gemini-Pro
 
