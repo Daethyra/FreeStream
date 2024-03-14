@@ -12,7 +12,6 @@ from pages.utils.utility_funcs import (
     StreamHandler,
     RetrieveDocuments,
     set_llm,
-    clear_messages,
 )
 from pages.utils.styles import footer
 
