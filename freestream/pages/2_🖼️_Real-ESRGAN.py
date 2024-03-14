@@ -25,15 +25,6 @@ uploaded_files = st.sidebar.file_uploader(
 
 st.divider()
 # Body description
-# Create a selectbox for model selection and download the selected model if not present
-upscaler_model = st.selectbox("Select a model", list(upscaler_model_options.keys()))
-
-if st.button("Download Model"):
-    with st.container():
-        download_model(upscaler_model, upscaler_model_options[upscaler_model])
-
-
-st.divider()
 
 # Create two columns with a single row to organize the UI
 left_image, right_image = st.columns(2)
@@ -53,3 +44,10 @@ with image_showcase:
             #    st.image(upscaled_image) # Latest uploaded image
     except Exception as e:
         st.error(f"An error occurred while processing the image: {e}")
+
+# Create a selectbox for model selection and download the selected model if not present
+upscaler_model = st.selectbox("Select a model", list(upscaler_model_options.keys()))
+
+if st.button("Download Model"):
+    with st.container():
+        download_model(upscaler_model, upscaler_model_options[upscaler_model])

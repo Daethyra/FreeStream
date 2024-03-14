@@ -8,7 +8,8 @@ import requests
 import streamlit as st
 import torch
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from langchain_community.chat_message_histories import \
+    StreamlitChatMessageHistory
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -120,18 +121,18 @@ def set_llm(selected_model: str, model_names: dict):
 
 # Dictionary of model options and their corresponding file URLs
 upscaler_model_options = {
-    "RealESRGAN_x4plus": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth",
-    "RealESRNet_x4plus": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth",
-    "RealESRGAN_x4plus_anime_6B": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
     "RealESRGAN_x2plus": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth",
-    "realesr-animevideov3": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth",
-    "realesr-general-x4v3": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth",
+    "RealESRGAN_x4plus (Quality)": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth",
+    "RealESRNet_x4plus (Faster)": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth",
+    "RealESRGAN_x4plus_anime_6B (Anime Input ONLY)": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
+    # "realesr-animevideov3": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth",
+    # "realesr-general-x4v3": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth",
 }
 
 
 # Define a function to download a model
 def download_model(
-    model_name: str, file_url: str, models_dir: str = "freestream/realesrgan/models"
+    model_name: str, file_url: str, models_dir: str = "freestream/pages/utils/realesrgan/models"
 ):
     """
     Downloads a specified model from a given URL if it's not already present in the local directory.
@@ -147,6 +148,7 @@ def download_model(
     # Check if the models directory exists. If it doesn't, create it.
     if not os.path.exists(models_dir):
         os.makedirs(models_dir)
+        logger.info("Created models directory: %s", models_dir)
 
     # Construct the local file path for the model.
     model_path = os.path.join(models_dir, f"{model_name}.pth")
@@ -162,6 +164,7 @@ def download_model(
             with open(model_path, "wb") as f:
                 # Write the content of the response to the local file.
                 f.write(response.content)
+                logger.info("\nDownloaded model: %s", model_name)
 
         # Use st.success to show a success message once the download is complete.
         st.toast(f"{model_name} downloaded successfully!", icon="✅")
@@ -169,6 +172,7 @@ def download_model(
     else:
         # If the model file already exists, inform the user.
         st.toast(f"{model_name} is already downloaded and ready to use.")
+        logger.info("Model %s already exists in %s", model_name, models_dir)
 
 
 class StreamHandler(BaseCallbackHandler):

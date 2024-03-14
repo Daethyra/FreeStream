@@ -1,6 +1,6 @@
 .streamlit/secrets.toml
 .codegeneration
-freestream/realesrgan/models
+freestream/pages/utils/realesrgan/models
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
