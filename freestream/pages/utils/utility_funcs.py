@@ -8,8 +8,7 @@ import requests
 import streamlit as st
 import torch
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.chat_message_histories import \
-    StreamlitChatMessageHistory
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -64,7 +63,7 @@ class RetrieveDocuments:
         from these chunks and embeddings.
         Finally, it configures a retriever using the vector database and returns the
         configured retriever.
-        
+
         Args:
             uploaded_files (List[Document]): A list of documents loaded from the uploaded files.
 
@@ -132,7 +131,9 @@ upscaler_model_options = {
 
 # Define a function to download a model
 def download_model(
-    model_name: str, file_url: str, models_dir: str = "freestream/pages/utils/realesrgan/models"
+    model_name: str,
+    file_url: str,
+    models_dir: str = "freestream/pages/utils/realesrgan/models",
 ):
     """
     Downloads a specified model from a given URL if it's not already present in the local directory.

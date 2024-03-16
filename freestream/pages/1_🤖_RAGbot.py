@@ -44,6 +44,7 @@ if not uploaded_files:
 
 retriever = RetrieveDocuments().configure_retriever(uploaded_files)
 
+### Configure Chat Model Settings ###
 # Add temperature header
 temperature_header = st.sidebar.markdown(
     """
@@ -126,6 +127,7 @@ selected_model = st.selectbox(
         st.session_state.model_selector, model_names
     ),  # Set the callback function
 )
+### ----------------------------- ###
 
 # Load the selected model dynamically
 llm = model_names[
@@ -137,6 +139,7 @@ qa_chain = ConversationalRetrievalChain.from_llm(
     llm, retriever=retriever, memory=memory, verbose=True
 )
 
+### Draw Messages ###
 # if the length of messages is 0, or when the user \
 # clicks the clear button,
 # show a default message from the AI
@@ -164,3 +167,4 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
         # Force print Gemini's response
         if selected_model == "Gemini-Pro":
             st.write(response)
+### ------------- ###
