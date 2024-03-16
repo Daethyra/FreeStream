@@ -7,13 +7,13 @@ from langchain_community.chat_message_histories import StreamlitChatMessageHisto
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
-from pages.utils.utility_funcs import (
+from pages import (
     PrintRetrievalHandler,
     StreamHandler,
     RetrieveDocuments,
     set_llm,
 )
-from pages.utils.styles import footer
+from pages import footer
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
