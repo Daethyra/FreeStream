@@ -10,7 +10,7 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 # Initialize page config
 st.set_page_config(page_title="FreeStream: Image Upscaler", page_icon="🖼️")
 st.title("🖼️Image Upscaler")
-#st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
+# st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
 st.caption(
     ":violet[_This page is still under construction. Stability, processing speed and output quality will improve in time._]"
 )
