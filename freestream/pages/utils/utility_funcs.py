@@ -252,7 +252,9 @@ def image_upscaler(image: str) -> Image:
     # If the image is greater than 300 in either dimension, then
     # stop the application
     if img.width > 300 or img.height > 300:
-        st.stop("Image is too large. Please upload an image with a width and height less than 300.")
+        st.stop(
+            "Image is too large. Please upload an image with a width and height less than 300."
+        )
     else:
         pass
 
