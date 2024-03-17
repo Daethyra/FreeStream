@@ -88,7 +88,3 @@ if prompt := st.chat_input("Ask a question"):
     with st.chat_message("assistant"):
         response = agent_executor.run(input=prompt, callbacks=[st_callback])
         st.write(response)
-
-    # Add messages to chat history
-    msgs.add_user_message(prompt)
-    msgs.add_ai_message(response)
