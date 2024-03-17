@@ -73,11 +73,17 @@ llm = model_names[
 
 # Initialize the agent with the tool and memory
 agent = create_conversational_retrieval_agent(
-    tools=[tavily_search], llm=llm, prompt=hub_prompt, memory=memory
+    tools=[tavily_search],
+    llm=llm,
+    prompt=hub_prompt,
 )
 
 agent_executor = AgentExecutor(
-    agent=agent, tools=tools, verbose=True, callbacks=st_callback
+    agent=agent,
+    tools=tools,
+    verbose=True,
+    callbacks=st_callback,
+    
 )
 
 ### ----------------------------------------------------- ###
