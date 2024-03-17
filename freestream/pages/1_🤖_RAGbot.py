@@ -18,7 +18,7 @@ from pages.utils import (
 
 # Initialize LangSmith tracing
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = "FreeStream-v3.0.0"
+os.environ["LANGCHAIN_PROJECT"] = "FS_Ragbot-v4.0.0"
 os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
 os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 

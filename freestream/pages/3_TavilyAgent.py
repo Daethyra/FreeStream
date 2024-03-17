@@ -1,12 +1,22 @@
+import os
+
 import streamlit as st
 from langchain import hub
-from langchain.agents import AgentExecutor, create_conversational_retrieval_agent
+from langchain.agents import (AgentExecutor,
+                              create_conversational_retrieval_agent)
 from langchain.memory import ConversationBufferMemory
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from langchain_community.chat_message_histories import \
+    StreamlitChatMessageHistory
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_openai import ChatOpenAI
 from pages.utils import chat_models, footer
+
+# Initialize LangSmith tracing
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_PROJECT"] = "FS_Agent-v4.0.0"
+os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
+os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 
 ### Streamlit Page Config ###
 # Set up Streamlit app
