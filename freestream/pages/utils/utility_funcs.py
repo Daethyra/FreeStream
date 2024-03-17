@@ -117,14 +117,6 @@ def set_llm(selected_model: str, model_names: dict):
         st.error(f"Failed to change model! Error: {e}\n{selected_model}")
 
 
-# Define a callback function for clearing the conversation history
-def clear_messages(msgs: StreamlitChatMessageHistory):
-    """
-    Clears the conversation history in the user interface.
-    """
-    msgs.clear()
-
-
 class StreamHandler(BaseCallbackHandler):
     """
     A callback handler for streaming the model's output to the user interface.
@@ -257,20 +249,16 @@ def image_upscaler(image: str) -> Image:
         device="cuda" if torch.cuda.is_available() else "cpu",
     )
 
-    # Downsize the image via ratio to ensure it can be upscaled.
-    # Otherwise, we run out of memory when a user uploads a huge image.
-    # If the image is greater than 1024 in either dimension, then
-    # the image is downsampled by a factor of 3.
-    if img.width > 128 or img.height > 128:
-        st.toast("Downsampling image...", icon="🔨")
-        logger.info("\nDownsampling image...")
-        img = img.resize((int(img.width * 0.15), int(img.height * 0.15)))
+    # If the image is greater than 300 in either dimension, then
+    # stop the application
+    if img.width > 300 or img.height > 300:
+        st.stop("Image is too large. Please upload an image with a width and height less than 300.")
     else:
-        img = img
+        pass
 
     # Upscale the image
     st.toast("Upscaling image...", icon="🔨")
-    logger.info("\nUpscaling image...")
+    logger.info(f"\nUpscaling {img}...")
     upscaled_img = upscaler(img)
     st.toast("Success!", icon="✅")
 
