@@ -58,7 +58,7 @@ tavily_search = TavilySearchResults(
 )
 
 # Define tools
-tools = [tavily_search]
+toolbox = [tavily_search]
 ## TOOLS ##
 
 ### ----------------------------------------------------- ###
@@ -73,7 +73,7 @@ llm = model_names[
 
 # Initialize the agent with the tool and memory
 agent = create_conversational_retrieval_agent(
-    tools=[tavily_search],
+    tools=toolbox,
     llm=llm,
     prompt=hub_prompt,
 )
