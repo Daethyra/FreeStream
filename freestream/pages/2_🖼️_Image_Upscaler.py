@@ -10,9 +10,9 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 # Initialize page config
 st.set_page_config(page_title="FreeStream: Image Upscaler", page_icon="🖼️")
 st.title("🖼️Image Upscaler")
-st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
+#st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
 st.caption(
-    ":violet[_This page is still under construction. Processing speed and output quality will improve over time._]"
+    ":violet[_This page is still under construction. Stability, processing speed and output quality will improve in time._]"
 )
 
 # Show footer
@@ -36,11 +36,9 @@ st.markdown(
     
     **Limitations**:
     
-    * Images with a width *or* height greater than 128 will be downsampled by 3/20ths. This limitation will be removed once Real-ESRGAN is implemented.
+    * Images with a width *or* height greater than 300 will not be upscaled due to resource limitations of this environment.
     * The current upscaler problematically generates new content around the edge of the image, especially on the right side.
     
-    As with all FreeStream pages, this one's purpose is merely to show you the possibilities without having to sign up or program anything manually. 
-    Right now, having a page that "works" is an important step in that it lays down the foundation for a robust solution.
     """
 )
 
