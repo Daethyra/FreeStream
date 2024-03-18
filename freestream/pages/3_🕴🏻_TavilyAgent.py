@@ -2,7 +2,7 @@ import os
 
 import streamlit as st
 from langchain import hub
-from langchain.agents import AgentExecutor
+from langchain.agents import AgentExecutor, create_openai_tools_agent
 from langchain.memory import ConversationBufferMemory
 from langchain_anthropic import ChatAnthropic
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
@@ -18,6 +18,7 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = "FS_Agent-v4.0.0"
 os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
 os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
+os.environ["TAVILY_API_KEY"] = st.secrets.TAVILY.tavily_api_key
 
 ### Streamlit Page Config ###
 # Set up Streamlit app
@@ -26,9 +27,37 @@ st.set_page_config(page_title="TavilySearch Chatbot")
 # Show footer
 st.markdown(footer, unsafe_allow_html=True)
 
+# Add file-upload button
+uploaded_files = st.sidebar.file_uploader(
+    label="Upload a PDF or text file",
+    type=["pdf", "doc", "docx", "txt"],
+    help="Types supported: pdf, doc, docx, txt \n\nConsider the size of your files before you upload. Processing speed varies by server load.",
+    accept_multiple_files=True,
+)
+
+## TOOLS ##
+# Define TavilySearch tool
+tavily_search = TavilySearchResults(max_results=5)
+
+# Define tools based on available files
+if uploaded_files:
+    retriever = RetrieveDocuments.configure_retriever(uploaded_files)
+    toolbox = [retriever, tavily_search]
+else:
+    toolbox = [tavily_search]
 
 
-### LLM Peripherals setup ###
+### Chatbot Configuration Widgets ###
+# Add the sidebar temperature slider
+temperature_slider = st.sidebar.slider(
+    label=""":orange[Set LLM Temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
+    min_value=0.0,
+    max_value=1.0,
+    value=0.0,
+    step=0.05,
+    key="llm_temperature",
+)
+
 # Create a dictionary with keys to chat model classes
 model_names = {
     "GPT-3.5 Turbo": ChatOpenAI(  # Define a dictionary entry for the "ChatOpenAI GPT-3.5 Turbo" model
@@ -80,39 +109,6 @@ model_names = {
     ),
 }
 
-# Set up memory for contextual conversation
-msgs = StreamlitChatMessageHistory()
-memory = ConversationBufferMemory(
-    memory_key="chat_history", chat_memory=msgs, return_messages=True
-)
-
-# Pull a prompt from the LangChain Hub
-hub_prompt = hub.pull("hwchase17/openai-tools-agent")
-
-## TOOLS ##
-# Define retriever tool
-
-
-# Define TavilySearch tool
-tavily_search = TavilySearchResults(
-    TAVILY_API_KEY=st.secrets.TAVILY.TAVILY_API_KEY, max_results=5
-)
-
-# Define tools
-toolbox = [tavily_search]
-
-
-### Chatbot Configuration Widgets ###
-# Add the sidebar temperature slider
-temperature_slider = st.sidebar.slider(
-    label=""":orange[Set LLM Temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
-    min_value=0.0,
-    max_value=1.0,
-    value=0.0,
-    step=0.05,
-    key="llm_temperature",
-)
-
 # Create a dropdown menu for selecting a chat model
 selected_model = st.selectbox(
     label="Choose your chat model:",  # Set the label for the dropdown menu
@@ -126,6 +122,15 @@ selected_model = st.selectbox(
 # Set up Streamlit callback handler
 st_callback = StreamlitCallbackHandler(st.container())
 
+### LLM Peripherals setup ###
+# Set up memory for contextual conversation
+msgs = StreamlitChatMessageHistory()
+memory = ConversationBufferMemory(
+    memory_key="chat_history", chat_memory=msgs, return_messages=True
+)
+
+# Pull a prompt from the LangChain Hub
+hub_prompt = hub.pull("daethyra/openai-tools-agent")
 
 
 ### Agent Configuration ###
@@ -136,7 +141,7 @@ llm = model_names[
 
 
 # Initialize the agent with the tool and memory
-agent = create_conversational_retrieval_agent(
+agent = create_openai_tools_agent(
     tools=toolbox,
     llm=llm,
     prompt=hub_prompt,
@@ -144,16 +149,16 @@ agent = create_conversational_retrieval_agent(
 
 agent_executor = AgentExecutor(
     agent=agent,
-    tools=tools,
+    tools=toolbox,
     verbose=True,
-    callbacks=st_callback,
-    
+    #callbacks=StreamlitCallbackHandler(st.container()),
 )
 
 
 # Streamlit app
-if prompt := st.chat_input("Ask a question"):
-    st.chat_message("user").write(prompt)
+if user_query := st.chat_input("Ask a question"):
+    st.chat_message("user").write(user_query)
     with st.chat_message("assistant"):
-        response = agent_executor.run(input=prompt, callbacks=[st_callback])
-        st.write(response)
+        with st.write_stream():
+            response = agent_executor.run(input=user_query, callbacks=[st_callback])
+            st.write(response)
