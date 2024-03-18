@@ -18,12 +18,23 @@ st.divider()
 st.subheader("What tools are currently available?")
 st.write(
     """
-    
     ### :blue[RAGbot]:
     
     :orange[*FreeStream's RAGbot can answer your questions directly from the documents you provide.*]
     
-    It works by allowing you to upload PDFs, Word documents, or plain text files, and then ask specific questions based on the information in your documents. The RAGbot uses a method called Corrective Retrieval Augmented Generation (CRAG), which involves retrieving documents, grading them for relevance, and generating answers if at least one document is relevant. If all documents are ambiguous or incorrect, it retrieves from an external source and uses that as context for answer generation. This process ensures a neat workflow where retrieval is done similarly to basic RAG, but with an added step of reasoning about the documents to ensure accurate and helpful responses.
+    This system empowers you to upload PDFs, Word documents, or plain text files. You can then pose specific questions directly related to the content of your documents.  Inspired by AlphaCodium's flow engineering techniques, it works as follows:
+
+    1) Documentation Ingestion:  A long-context LLM carefully processes your uploaded documentation.
+
+    2) Question Answering:  The system meticulously answers your question, drawing knowledge exclusively from the provided documents.
+
+    3) Context Relevance Validation:  To safeguard against errors, the system only generates a response if the retrieved context is sufficiently relevant to aide the AI's response.
+    
+    ### :blue[Image Upscaler]:
+    
+    :orange[A proof of concept page, the *Image Upscaler* upscales images by 2.0x.]
+    
+    While the plan to use [Real-ESRGAN](), is in progress, [Swin2SR](https://huggingface.co/caidas/swin2SR-classical-sr-x2-64) is used as a makeshift image upscaler. Due to the FreeStream's current environmental resource limitations, it cannot process images with a width or height greater than 300 pixels.
     """
 )
 
