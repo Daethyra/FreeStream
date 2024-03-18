@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 import tempfile
+import datetime
 from typing import List
 
 import streamlit as st
@@ -111,7 +112,7 @@ def set_llm(selected_model: str, model_names: dict):
     except Exception as e:
         # Log the detailed error message
         logging.error(
-            f"Unsupported model selected or Error changing model: {e}\n{selected_model}"
+            f"An unsupported model name was selected or injected. Error changing model: {e}\n{selected_model}"
         )
         # Display a more informative error message to the user
         st.error(f"Failed to change model! Error: {e}\n{selected_model}")
@@ -252,16 +253,22 @@ def image_upscaler(image: str) -> Image:
     # If the image is greater than 300 in either dimension, then
     # stop the application
     if img.width > 300 or img.height > 300:
-        st.stop(
-            "Image is too large. Please upload an image with a width and height less than 300."
+        st.warning(
+            "Image is too large. Please upload an image with a width and height less than 1024."
         )
+        st.stop()
     else:
-        pass
-
-    # Upscale the image
-    st.toast("Upscaling image...", icon="🔨")
-    logger.info(f"\nUpscaling {img}...")
-    upscaled_img = upscaler(img)
-    st.toast("Success!", icon="✅")
+        # Upscale the image
+        logger.info(
+            f"\nStarted upscaling {img} at {datetime.datetime.now().strftime('%H:%M:%S')}..."
+        )
+        with st.spinner(
+            f"Began upscaling: {datetime.datetime.now().strftime('%H:%M:%S')}..."
+        ):
+            upscaled_img = upscaler(img)
+            logger.info(
+                f"\nFinished upscaling {img} at {datetime.datetime.now().strftime('%H:%M:%S')}."
+            )
+            st.toast("Success!", icon="✅")
 
     return upscaled_img
