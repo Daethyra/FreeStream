@@ -26,7 +26,6 @@ st.set_page_config(page_title="TavilySearch Chatbot")
 # Show footer
 st.markdown(footer, unsafe_allow_html=True)
 
-### ----------------------------------------------------- ###
 
 
 ### LLM Peripherals setup ###
@@ -101,9 +100,7 @@ tavily_search = TavilySearchResults(
 
 # Define tools
 toolbox = [tavily_search]
-## TOOLS ##
 
-### ----------------------------------------------------- ###
 
 ### Chatbot Configuration Widgets ###
 # Add the sidebar temperature slider
@@ -153,7 +150,6 @@ agent_executor = AgentExecutor(
     
 )
 
-### ----------------------------------------------------- ###
 
 # Streamlit app
 if prompt := st.chat_input("Ask a question"):
