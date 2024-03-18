@@ -91,6 +91,9 @@ memory = ConversationBufferMemory(
 hub_prompt = hub.pull("hwchase17/openai-tools-agent")
 
 ## TOOLS ##
+# Define retriever tool
+
+
 # Define TavilySearch tool
 tavily_search = TavilySearchResults(
     TAVILY_API_KEY=st.secrets.TAVILY.TAVILY_API_KEY, max_results=5
@@ -103,6 +106,16 @@ toolbox = [tavily_search]
 ### ----------------------------------------------------- ###
 
 ### Chatbot Configuration Widgets ###
+# Add the sidebar temperature slider
+temperature_slider = st.sidebar.slider(
+    label=""":orange[Set LLM Temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
+    min_value=0.0,
+    max_value=1.0,
+    value=0.0,
+    step=0.05,
+    key="llm_temperature",
+)
+
 # Create a dropdown menu for selecting a chat model
 selected_model = st.selectbox(
     label="Choose your chat model:",  # Set the label for the dropdown menu
