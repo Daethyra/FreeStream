@@ -11,7 +11,6 @@ from pages.utils import (
     PrintRetrievalHandler,
     RetrieveDocuments,
     StreamHandler,
-    chat_models,
     footer,
     set_llm,
 )
