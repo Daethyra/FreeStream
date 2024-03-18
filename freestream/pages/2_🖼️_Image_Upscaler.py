@@ -1,8 +1,7 @@
 import os
 
 import streamlit as st
-from pages.utils.utility_funcs import image_upscaler
-from pages.utils.styles import footer
+from pages.utils import image_upscaler, footer
 
 # Set expandable_segments
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
