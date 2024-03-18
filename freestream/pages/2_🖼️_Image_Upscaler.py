@@ -10,7 +10,7 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 # Initialize page config
 st.set_page_config(page_title="FreeStream: Image Upscaler", page_icon="🖼️")
 st.title("🖼️Image Upscaler")
-#st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
+# st.header(":green[_⚠️Under Construction⚠️_]", divider="red")
 st.caption(
     ":violet[_This page is still under construction. Stability, processing speed and output quality will improve in time._]"
 )
@@ -32,12 +32,10 @@ st.divider()
 # Create a body paragraph
 st.markdown(
     """
-    Although the page is still being worked on, you're encouraged to test out the current upscaler, [Swin2SR](https://huggingface.co/caidas/swin2SR-classical-sr-x2-64).
-    
     **Limitations**:
     
     * Images with a width *or* height greater than 300 will not be upscaled due to resource limitations of this environment.
-    * The current upscaler problematically generates new content around the edge of the image, especially on the right side.
+    * The current upscaler, [Swin2SR](https://huggingface.co/caidas/swin2SR-classical-sr-x2-64), problematically generates new content around the edge of the image, especially on the right side.
     
     """
 )
