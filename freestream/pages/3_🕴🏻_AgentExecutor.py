@@ -132,7 +132,7 @@ selected_model = st.selectbox(
 )
 
 # Set up Streamlit callback handler
-st_callback = StreamlitCallbackHandler(st.container())
+agent_callback = StreamlitCallbackHandler(st.container())
 
 ### LLM Peripherals setup ###
 # Set up memory for contextual conversation
@@ -173,6 +173,6 @@ if user_query := st.chat_input("Ask a question"):
     with st.chat_message("assistant"):
         response = agent_executor.invoke(
             {"input": user_query, "tool_names": toolbox, "chat_history": memory},
-            callbacks=[st_callback],
+            callbacks=[agent_callback],
             )
         st.write(response)
