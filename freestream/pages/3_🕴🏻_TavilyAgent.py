@@ -159,6 +159,7 @@ agent_executor = AgentExecutor(
 if user_query := st.chat_input("Ask a question"):
     st.chat_message("user").write(user_query)
     with st.chat_message("assistant"):
-        with st.write_stream():
-            response = agent_executor.run(input=user_query, callbacks=[st_callback])
-            st.write(response)
+        response = agent_executor.invoke(
+            {"input": user_query, "tool_names": toolbox, "chat_history": memory},
+            callbacks=[st_callback])
+        st.write(response)
