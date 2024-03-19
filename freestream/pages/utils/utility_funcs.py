@@ -90,7 +90,7 @@ class RetrieveDocuments:
 
         # Define retriever
         retriever = vectordb.as_retriever(
-            search_type="mmr", search_kwargs={"k": 7, "fetch_k": 14}
+            search_type="mmr", search_kwargs={"k": 5, "fetch_k": 20, "lambda_mult": 0.6}
         )
 
         return retriever
