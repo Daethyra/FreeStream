@@ -9,6 +9,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_core.runnables import RunnableConfig
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from pages.utils import RetrieveDocuments, footer
@@ -133,7 +134,9 @@ selected_model = st.selectbox(
 )
 
 # Set up Streamlit callback handler
-agent_callback = StreamlitCallbackHandler(st.container())
+agent_callback = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
+configurator = RunnableConfig()
+configurator["callbacks"] = [agent_callback]
 
 ### LLM Peripherals setup ###
 # Set up memory for contextual conversation
@@ -160,7 +163,7 @@ agent = create_openai_tools_agent(
     prompt=hub_prompt,
 )
 
-agent_executor = AgentExecutor(
+agent_executor = AgentExecutor.from_agent_and_tools(
     agent=agent,
     tools=toolbox,
     verbose=True,
@@ -173,7 +176,9 @@ if user_query := st.chat_input("Ask a question"):
     st.chat_message("user").write(user_query)
     with st.chat_message("assistant"):
         response = agent_executor.invoke(
-            {"input": user_query, "tool_names": toolbox, "chat_history": memory},
-            callbacks=[agent_callback],
+            user_query,
+            configurator,
+            #{"input": user_query, "tool_names": toolbox, "chat_history": memory},
+            #callbacks=[agent_callback],
         )
         st.write(response)
