@@ -173,5 +173,6 @@ if user_query := st.chat_input("Ask a question"):
     with st.chat_message("assistant"):
         response = agent_executor.invoke(
             {"input": user_query, "tool_names": toolbox, "chat_history": memory},
-            callbacks=[st_callback])
+            callbacks=[st_callback],
+            )
         st.write(response)
