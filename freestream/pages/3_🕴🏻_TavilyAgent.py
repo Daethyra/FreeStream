@@ -4,6 +4,7 @@ import streamlit as st
 from langchain import hub
 from langchain.agents import AgentExecutor, create_openai_tools_agent
 from langchain.memory import ConversationBufferMemory
+from langchain.tools.retriever import create_retriever_tool
 from langchain_anthropic import ChatAnthropic
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 from langchain_community.chat_message_histories import \
@@ -41,8 +42,19 @@ tavily_search = TavilySearchResults(max_results=5)
 
 # Define tools based on available files
 if uploaded_files:
+    # Initialize a retriever
     retriever = RetrieveDocuments.configure_retriever(uploaded_files)
-    toolbox = [retriever, tavily_search]
+    
+    # Create a tool from a retriever
+        # Ref docs: https://python.langchain.com/docs/use_cases/question_answering/conversational_retrieval_agents, 
+    retriever_tool = create_retriever_tool(
+        retriever=retriever,
+        name="users_uploaded_documents",
+        description="Searches a FAISS retriever for relevant information from the user's uploaded documents.",
+        document_prompt="Based on the conversation so far, with prioritization on the current focus of the user, "
+    ),
+    
+    toolbox = [retriever_tool, tavily_search]
 else:
     toolbox = [tavily_search]
 
