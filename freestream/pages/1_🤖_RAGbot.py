@@ -7,7 +7,7 @@ from langchain_community.chat_message_histories import StreamlitChatMessageHisto
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
-from pages.utils import (
+from pages import (
     PrintRetrievalHandler,
     StreamHandler,
     RetrieveDocuments,
