@@ -7,8 +7,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.tools.retriever import create_retriever_tool
 from langchain_anthropic import ChatAnthropic
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
-from langchain_community.chat_message_histories import \
-    StreamlitChatMessageHistory
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
@@ -44,16 +43,18 @@ tavily_search = TavilySearchResults(max_results=5)
 if uploaded_files:
     # Initialize a retriever
     retriever = RetrieveDocuments.configure_retriever(uploaded_files)
-    
+
     # Create a tool from a retriever
-        # Ref docs: https://python.langchain.com/docs/use_cases/question_answering/conversational_retrieval_agents, 
-    retriever_tool = create_retriever_tool(
-        retriever=retriever,
-        name="users_uploaded_documents",
-        description="Searches a FAISS retriever for relevant information from the user's uploaded documents.",
-        document_prompt="Based on the conversation so far, with prioritization on the current focus of the user, "
-    ),
-    
+    # Ref docs: https://python.langchain.com/docs/use_cases/question_answering/conversational_retrieval_agents,
+    retriever_tool = (
+        create_retriever_tool(
+            retriever=retriever,
+            name="users_uploaded_documents",
+            description="Searches a FAISS retriever for relevant information from the user's uploaded documents.",
+            document_prompt="Based on the conversation so far, with prioritization on the current focus of the user, ",
+        ),
+    )
+
     toolbox = [retriever_tool, tavily_search]
 else:
     toolbox = [tavily_search]
@@ -163,7 +164,7 @@ agent_executor = AgentExecutor(
     agent=agent,
     tools=toolbox,
     verbose=True,
-    #callbacks=StreamlitCallbackHandler(st.container()),
+    # callbacks=StreamlitCallbackHandler(st.container()),
 )
 
 
@@ -174,5 +175,5 @@ if user_query := st.chat_input("Ask a question"):
         response = agent_executor.invoke(
             {"input": user_query, "tool_names": toolbox, "chat_history": memory},
             callbacks=[agent_callback],
-            )
+        )
         st.write(response)
