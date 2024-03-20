@@ -23,7 +23,7 @@ opencv-python-headless = "^4.9.0.80"
 langchain-anthropic = "^0.1.4"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
+black = "^24.3.0"
 
 
 [[tool.poetry.source]]
