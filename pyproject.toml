@@ -24,7 +24,7 @@ langchain-anthropic = "^0.1.4"
 langchainhub = "^0.1.15"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
+black = "^24.3.0"
 
 
 [[tool.poetry.source]]

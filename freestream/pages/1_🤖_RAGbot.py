@@ -7,12 +7,13 @@ from langchain_community.chat_message_histories import StreamlitChatMessageHisto
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
-from pages.utils import (
+from pages import (
     PrintRetrievalHandler,
     RetrieveDocuments,
     StreamHandler,
     footer,
     set_llm,
+    footer,
 )
 
 # Initialize LangSmith tracing
@@ -138,6 +139,7 @@ qa_chain = ConversationalRetrievalChain.from_llm(
     llm, retriever=retriever, memory=memory, verbose=True
 )
 
+### Chat History ###
 # if the length of messages is 0, or when the user \
 # clicks the clear button,
 # show a default message from the AI
