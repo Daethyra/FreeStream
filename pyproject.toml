@@ -23,7 +23,7 @@ langchain-anthropic = "^0.1.15"
 langchain-community = "^0.2.1"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.3.0"
+black = "^25.1.0"
 
 [build-system]
 requires = ["poetry-core"]
