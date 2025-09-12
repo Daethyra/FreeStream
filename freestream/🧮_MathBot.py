@@ -1,9 +1,9 @@
+import os
 import streamlit as st
 from langchain_deepseek import ChatDeepSeek
 from langchain.agents import create_agent
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.tools import tool
-from freestream import footer
 import math
 
 st.set_page_config(
@@ -13,9 +13,36 @@ st.set_page_config(
 # Decorate the page
 st.title("FreeStream")
 st.header(":green[_MathBot reasons before responding_]", divider="red")
-st.markdown(footer, unsafe_allow_html=True)
 
-DEEPSEEK_API_KEY = st.sidebar.text_input("DeepSeek API Key", type="password")
+# Check for DeepSeek API Key before continuing
+if "DEEPSEEK_API_KEY" in st.secrets.DEEPSEEK:
+    DEEPSEEK_API_KEY = st.secrets.DEEPSEEK.DEEPSEEK_API_KEY
+else:
+    DEEPSEEK_API_KEY = st.sidebar.text_input("DeepSeek API Key", type="password")
+
+# Initialize LangSmith tracing
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_PROJECT"] = "FreeStream"
+os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
+os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
+
+# Sidebar
+st.sidebar.subheader("__User Panel__")
+# Add the sidebar temperature slider
+st.sidebar.markdown(" ### Temperature Slider")
+temperature_slider = st.sidebar.slider(
+    label=""":orange[Set LLM Temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
+    min_value=0.5,
+    max_value=1.0,
+    value=0.7,
+    step=0.01,
+    key="temperature_slider",
+)
+
+# Debug tool # Display thinking process if available
+# if st.sidebar.checkbox("Show Thinking Process"):
+#     for i, thought in enumerate(st.session_state.thoughts):
+#         st.sidebar.text_area(f"Thought {i+1}", thought, height=100)
 
 # Button to clear conversation history
 if st.sidebar.button("Clear message history", use_container_width=True):
@@ -32,11 +59,6 @@ for message in st.session_state.messages:
     if message["role"] in ["user", "assistant"]:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-
-# Debug tool # Display thinking process if available
-# if st.sidebar.checkbox("Show Thinking Process"):
-#     for i, thought in enumerate(st.session_state.thoughts):
-#         st.sidebar.text_area(f"Thought {i+1}", thought, height=100)
 
 if DEEPSEEK_API_KEY:
     # Define calculator tool for the agent
@@ -76,7 +98,7 @@ if DEEPSEEK_API_KEY:
     )
 
     chatter_model = ChatDeepSeek(
-        temperature=0.7,  # Higher temperature for creative responses
+        temperature=temperature_slider,  # Higher temperature for creative responses
         api_key=DEEPSEEK_API_KEY,
         model="deepseek-chat",
         max_tokens=512,
