@@ -4,7 +4,7 @@ from typing import Any, List
 import streamlit as st
 
 # Define a function to change the background to an image via URL
-# https://discuss.streamlit.io/t/how-do-i-use-a-background-image-on-streamlit/5067/19?u=daethyra
+# https://discuss.streamlit.io/t/how-do-i-use-a-background-image-on-streamlit/5067/19
 def set_bg_url():
     """
     A function to unpack an image from url and set as bg.
@@ -27,7 +27,7 @@ def set_bg_url():
 
 
 # Define a function to change the background to a local image
-# https://discuss.streamlit.io/t/how-do-i-use-a-background-image-on-streamlit/5067/16?u=daethyra
+# https://discuss.streamlit.io/t/how-do-i-use-a-background-image-on-streamlit/5067/16
 def set_bg_local(main_bg):
     """
     A function to unpack an image from root folder and set as bg.

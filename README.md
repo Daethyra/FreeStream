@@ -1,10 +1,10 @@
 # FreeStream
 
-Build your own personal chatbot interface with Streamlit!
+Streamlit Chatbots - Work in Progress
 
 ***TLDR***:
-- A repository to help you get started building your own chatbots using LangChain
-- All conversation content is traced via LangSmith for developer evaluation
+- Build on top of an already robust chatbot that reasons before responding, and has access to tools
+- Customize a chatbot to respond exactly how you want
 - Hostable for free through Streamlit Community Cloud
 - API keys required
 - Pay-per-use ChatGPT style interface
@@ -14,10 +14,6 @@ Build your own personal chatbot interface with Streamlit!
 - [Quickstart](#quickstart)
   - [Installation](#installation)
 - [Description](#description)
-  - [Key Concepts](#key-concepts)
-  - [What can I do with FreeStream?](#what-can-i-do-with-freestream)
-- [Functional Requirements](#functional-requirements)
-- [Non-Functional Requirements](#non-functional-requirements)
 - [License](./LICENSE)
 - [LLM Providers' Privacy Policies](#llm-providers-privacy-policies)
 
@@ -42,16 +38,9 @@ Run:
 poetry install
 ```
 
-You will need to set all required secrets, which require their own respective accounts.
+You will need to set all required secrets(API keys), which require their own respective accounts.
 Make a copy of "template.secrets.toml" and rename it to "secrets.toml" in the root of the project. Fill out each field in the file.
 
-**Need API Keys?**
-| **API Platform** | **Link** |
-| ---- | ---------- |
-| Claude | https://console.anthropic.com/ |
-| Google | https://aistudio.google.com/app/apikey |
-| Langchain | https://smith.langchain.com/ |
-| OpenAI | https://platform.openai.com/api-keys |
 
 You can then start the development server with hot reloading by running:
 
@@ -62,11 +51,9 @@ poetry run streamlit run ./freestream/🏡_Home.py
 ---
 
 ## Description
-I originally created this project as a chatbot for law and medical professionals, but I quickly realized a more flexible system would benefit everyone.
+Just a freaking robot.
 
-#### **Key Concepts**
-
-*Related to extending the capabilities of generative AI.*
+*Here's some papers I found interesting when first learning about generative AI and "augmented generation."*
 | **Concept** | **Definition** |
 | ---- | ---------- |
 | [Large Language Model](https://en.wikipedia.org/wiki/Large_language_model "Wikipedia: Large language model") | A model that can generate text. |
@@ -76,34 +63,12 @@ I originally created this project as a chatbot for law and medical professionals
 | [ColBERT](https://arxiv.org/abs/2004.12832 "Arxiv: 2004.12832") | Efficient BERT-Based Document Search |
 | [RAPTOR](https://arxiv.org/abs/2401.18059 "Arxiv: 2401.18059") | Recursive Abstractive Processing for Tree-Organized Retrieval |
 
-### What can I do with FreeStream?
-
-FreeStream has two chatbots where you can interact with an LLM of your choosing, for example, GPT-4o or Claude Opus. You can very easily add more LLMs to the chatbot dictionary, like Llama 3 via [Ollama](https://ollama.com/ "Ollama home page"), or Gemini-Pro through LangChain's [`ChatGoogleGenerativeAI`](https://api.python.langchain.com/en/latest/chat_models/langchain_google_genai.chat_models.ChatGoogleGenerativeAI.html "LangChain API Docs"). The original chatbot for this project was "RAGbot," which allows you to ask questions about your upload file(s). Curie, is a more for programming and self-learning purposes.
-
-#### Functional Requirements
-
-The application **MUST**...
-1. Provide a user interface for chatting with large language models.
-2. Have a retrieval augmented generative chatbot.
-3. Provide a range of chatbot pages, differentiated by their prompt engineering.
-4. Let the user "drop-in" their choice of LLM at any time during a conversation.
-5. ~~Allow users to perform image upscaling (PDF, JPEG, PNG) without limits.~~
-
-#### Non-Functional Requirements
-
-The application **SHOULD**...
-1. Aim for 24/7 availability.
-2. Prioritize ease of navigation
-3. Feature a visually appealing, seamless interface.
-
 ---
 
 # [License](./LICENSE)
 
 # LLM Providers' Privacy Policies
 
-- [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy)
-- [Google](https://transparency.google/our-policies/privacy-policy-terms-of-service/ "Was unable to find a privacy policy specific to Google AI Studio.")
-- [Anthropic](https://support.anthropic.com/en/articles/7996866-how-long-do-you-store-personal-data "Support forum response that may suddenly be obsoleted.")
+- [DeepSeek Privacy Policy](https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html)
 - [Streamlit](https://streamlit.io/privacy-policy/)
 

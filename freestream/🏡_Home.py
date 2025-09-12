@@ -1,80 +1,89 @@
+import datetime
 import streamlit as st
-
+from langchain_deepseek import ChatDeepSeek
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from freestream import footer
+from pages import save_conversation_history
 
 st.set_page_config(
-    page_title="FreeStream: Chatbots for specific use-cases", page_icon="🏡"
+    page_title="FreeStream: A basic chatbot to build on.", page_icon="🏡"
 )
 
 st.title("FreeStream")
-st.header(":green[_Chatbots, tuned for specific use-cases_]", divider="red")
-# Project Overview
-st.subheader(":blue[What is FreeStream?]")
-# Show footer
+st.header(":green[_A basic chatbot to build on._]", divider="red")
 st.markdown(footer, unsafe_allow_html=True)
 
-### Body content ###
-st.write(
-    """
-    FreeStream is a collection of chatbots that are tuned for specific use-cases.
-    """
-)
-st.divider()
-st.subheader("What tools are currently available?")
-st.write(
-    """
-    ### :blue[Curie]:
-    
-    :orange[*General Purpose Chatbot*]
-    
-    Curie is great for reflective critical thinking and programming code. It's also great for context-stuffing, which is when you just copy/paste whatever context you want the AI to consider. Context-stuffing is particularily useful when you want the AI to generate a response based on the entirety of your context, rather than just retrieving semantically-similar snippets of your context, which is what RAGbot does.
-    """
+DEEPSEEK_API_KEY = st.sidebar.text_input("DeepSeek API Key", type="password")
+# Button to clear conversation history
+if st.sidebar.button("Clear message history", use_container_width=True):
+    st.session_state.clear()
+
+
+# Initialize chat model (but only if API key is provided)
+if DEEPSEEK_API_KEY:
+    chat_model = ChatDeepSeek(
+        temperature=0.5,
+        api_key=DEEPSEEK_API_KEY,
+        model="deepseek-chat",
+        max_tokens=128,
+        streaming=True
+    )
+
+# Initialize session state for messages
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+
+# Display chat history
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Save the formatted conversation history to a variable
+formatted_history = save_conversation_history(st.session_state.messages)
+current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# Create a sidebar button to download the conversation history
+st.sidebar.download_button(
+    label="Download conversation history",
+    data=formatted_history,
+    file_name=f"conversation_history {current_time}.md",
+    mime="text/markdown",
+    key="download_conversation_history_button",
+    help="Download the conversation history as a text file with some formatting.",
+    use_container_width=True,   
 )
 
-with st.expander(label=":violet[System Prompt:]", expanded=False):
-    st.markdown(
-        """
-        *You are a chatbot primarily designed to assist users in learning, programming, and project management; help the user learn, and provide actionable code when asked. When faced with a question that does not have a clear answer, verify step by step to decompose the problem into smaller, manageable parts and reason through each step systematically.*
-        """
-    )
-st.write(
-    """
-    ### :blue[RAGbot]:
+# Handle user input
+if user_input := st.chat_input("type here<3"):
+    # Display user message
+    with st.chat_message("user"):
+        st.markdown(user_input)
     
-    :orange[*Vector Store Based Chatbot*]
+    # Add user message to history
+    st.session_state.messages.append({"role": "user", "content": user_input})
     
-    RAGbot searches files you upload for answers to your questions. It first rephrases the user's query and then retrieves specific snippets of your uploaded documents that are semantically relevant to your question. 
+    # Display assistant response
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        full_response = ""
+        
+        # Convert messages to LangChain format
+        lc_messages = []
+        for msg in st.session_state.messages:
+            if msg["role"] == "user":
+                lc_messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                lc_messages.append(AIMessage(content=msg["content"]))
+            elif msg["role"] == "system":
+                lc_messages.append(SystemMessage(content=msg["content"]))
+        
+        # Stream the response
+        for chunk in chat_model.stream(lc_messages):
+            if hasattr(chunk, 'content'):
+                full_response += chunk.content
+                message_placeholder.markdown(full_response + "▌")
+        
+        message_placeholder.markdown(full_response)
     
-    It's great at finding specific answers from long documents and synthesizing knowledge from across uploaded documents. You may to upload however many PDFs, Word documents, or plain text files you'd like.
-    """
-)
-
-with st.expander(label=":violet[RAGbot workflow:]", expanded=False):
-    st.markdown(
-        """
-        1. Upload Documents:  Upload your documents to RAGbot.
-        
-        2. Document Splitting:  RAGbot splits your documents into chunks for further processing.
-        
-        3. Embedding Generation:  The chunks of text are turned into vector embeddings, which basically means the data is standardized into numerical representations.
-        
-        4. Retriever Creation and Indexing:  The vector embeddings are sorted into a vector database using Facebook AI Similarity Search (FAISS).
-        
-        5. Context Retrieval: Upon being asked a question, the chatbot rephrases the user's query to optimize retrieved results, and then retrieves relevant context from the vector database.
-        
-        6. Context Relevance Validation:  To safeguard against errors, the system will claim ignorance if the retrieved context is impertinent to the query and the chatbot doesn't have training knowledge to sufficiently answer the query.
-        
-        7. Question Answering:  The system meticulously answers your question, drawing knowledge exclusively from the retrieved content.
-        """
-    )
-st.divider()
-st.markdown(
-    """
-    #### References
-    
-    * **[Run This App On Your Own Computer](https://github.com/Daethyra/FreeStream/blob/streamlit/README.md#installation)**
-    * **[LLM Service Provider Privacy Policies](https://github.com/Daethyra/FreeStream/blob/streamlit/README.md#privacy-policy)**
-    * **[FreeStream's GitHub Repository](https://github.com/Daethyra/FreeStream)**    
-    """
-)
-st.divider()
+    # Add assistant response to history
+    st.session_state.messages.append({"role": "assistant", "content": full_response})

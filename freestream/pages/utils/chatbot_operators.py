@@ -5,7 +5,6 @@ import sys
 from typing import List
 
 import streamlit as st
-import torch
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -47,7 +46,8 @@ class RetrieveDocuments:
         )
         self.embeddings = HuggingFaceEmbeddings(
             model_name="all-MiniLM-L6-v2",
-            model_kwargs={"device": "cuda" if torch.cuda.is_available() else "cpu"},
+            # model_kwargs={"device": "cuda" if torch.cuda.is_available() else "cpu"},
+            model_kwargs={"device": "cpu"},
         )
 
     @st.cache_resource(ttl="1h")
