@@ -4,7 +4,6 @@ import os
 import streamlit as st
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
-from langchain_anthropic import ChatAnthropic
 from langchain_community.chat_message_histories import \
     StreamlitChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -108,29 +107,29 @@ openai_models = {
     # )
 }
 
-anthropic_models = {
-    "Claude: Haiku": ChatAnthropic(
-        model="claude-3-haiku-20240307",
-        anthropic_api_key=anthropic_api_key,
-        temperature=temperature_slider,
-        streaming=True,
-        max_tokens=4096,
-    ),
-    "Claude 3.5: Sonnet": ChatAnthropic(
-        model="claude-3-5-sonnet-20240620",
-        anthropic_api_key=anthropic_api_key,
-        temperature=temperature_slider,
-        streaming=True,
-        max_tokens=4096,
-    ),
-    # "Claude: Opus": ChatAnthropic(
-    #     model="claude-3-opus-20240229",
-    #     anthropic_api_key=anthropic_api_key,
-    #     temperature=temperature_slider,
-    #     streaming=True,
-    #     max_tokens=4096,
-    # ),
-}
+# anthropic_models = {
+#     "Claude: Haiku": ChatAnthropic(
+#         model="claude-3-haiku-20240307",
+#         anthropic_api_key=anthropic_api_key,
+#         temperature=temperature_slider,
+#         streaming=True,
+#         max_tokens=4096,
+#     ),
+#     "Claude 3.5: Sonnet": ChatAnthropic(
+#         model="claude-3-5-sonnet-20240620",
+#         anthropic_api_key=anthropic_api_key,
+#         temperature=temperature_slider,
+#         streaming=True,
+#         max_tokens=4096,
+#     ),
+#     "Claude: Opus": ChatAnthropic(
+#         model="claude-3-opus-20240229",
+#         anthropic_api_key=anthropic_api_key,
+#         temperature=temperature_slider,
+#         streaming=True,
+#         max_tokens=4096,
+#     ),
+# }
 
 # Master dictionary
 model_names = {}
@@ -138,8 +137,8 @@ model_names = {}
 # Update model master dictionary based on present API keys
 if openai_api_key:
     model_names.update(openai_models)
-if anthropic_api_key:
-    model_names.update(anthropic_models)
+# if anthropic_api_key:
+#     model_names.update(anthropic_models)
 
 # Create a dropdown menu for selecting a chat model
 selected_model = st.selectbox(
