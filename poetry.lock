@@ -612,6 +612,7 @@ version = "2.4.2"
 description = "Scrape and search localized results from Google, Bing, Baidu, Yahoo, Yandex, Ebay, Homedepot, youtube at scale using SerpApi.com"
 optional = false
 python-versions = ">=3.5"
+groups = ["main"]
 files = [
     {file = "google_search_results-2.4.2.tar.gz", hash = "sha256:603a30ecae2af8e600b22635757a6df275dad4b934f975e67878ccd640b78245"},
 ]
@@ -958,14 +959,14 @@ referencing = ">=0.31.0"
 
 [[package]]
 name = "langchain"
-version = "1.0.0a4"
+version = "1.0.0a5"
 description = "Building applications with LLMs through composability"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "langchain-1.0.0a4-py3-none-any.whl", hash = "sha256:749ceec4e308f2529329913397225967be26ece7d935d2b4ae0f70ee446aa2bc"},
-    {file = "langchain-1.0.0a4.tar.gz", hash = "sha256:a21b567d3325ed9f3076a0916fc8d47b432b4071d02ae4a69862dddb66f2caf4"},
+    {file = "langchain-1.0.0a5-py3-none-any.whl", hash = "sha256:7090599d4d4f502596853b45678309c19fd75353d40372dad6ca507da93a1da9"},
+    {file = "langchain-1.0.0a5.tar.gz", hash = "sha256:4edc46cdafafc05ffadf007f4c83530e67f7f523203aa3f4dd903c9a1c199dc6"},
 ]
 
 [package.dependencies]
@@ -3346,4 +3347,4 @@ cffi = ["cffi (>=1.17) ; python_version >= \"3.13\" and platform_python_implemen
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "def651f05f3b0be0957f84d771cf1332027916b77e57614fa462ace46bc0367c"
+content-hash = "577d88b194de3914cbf007eeff9507583aca93d171b9e81c48df3e34134303a8"
