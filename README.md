@@ -19,7 +19,7 @@ Streamlit Chatbots - Work in Progress
 
 ## Quickstart
 
-This app is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 4.0.1")
+This app is hosted via Streamlit Community Cloud, [here](https://freestream.streamlit.app/ "Current Version: 7.0.0")
 
 ### Installation
 
@@ -69,6 +69,7 @@ Just a freaking robot.
 
 # LLM Providers' Privacy Policies
 
+- [LangChain](https://www.langchain.com/privacy-policy)
 - [DeepSeek Privacy Policy](https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html)
 - [Streamlit](https://streamlit.io/privacy-policy/)
 
