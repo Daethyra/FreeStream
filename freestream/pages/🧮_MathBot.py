@@ -1,10 +1,11 @@
-import os
-import streamlit as st
-from langchain_deepseek import ChatDeepSeek
-from langchain.agents import create_agent
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-from langchain_core.tools import tool
 import math
+import os
+
+import streamlit as st
+from langchain.agents import create_agent
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.tools import tool
+from langchain_deepseek import ChatDeepSeek
 
 st.set_page_config(
     page_title="FreeStream: MathBot", page_icon="🧮"

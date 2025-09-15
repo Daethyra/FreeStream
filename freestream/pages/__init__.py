@@ -7,4 +7,9 @@ from .utils import (
     set_bg_url,
     set_bg_local,
     save_conversation_history,
+    format_weather_data,
+    get_weather,
+    web_search,
+    clock,
+    calculate,
 )
