@@ -91,9 +91,9 @@ if DEEPSEEK_API_KEY:
     thinker_model = ChatDeepSeek(
     temperature=0.01,  # Low temperature for logical thinking
     api_key=DEEPSEEK_API_KEY,
-    model="deepseek-chat",
+    model="deepseek-reasoner",
     max_tokens=8192,
-    streaming=False
+    #streaming=False
     )
 
     chatter_model = ChatDeepSeek(
@@ -257,7 +257,7 @@ if user_input := st.chat_input("type here<3"):
             
             # Stream the response from chatter model
             try:
-                for chunk in chatter_model.stream(chatter_messages):
+                for chunk in thinker_model.stream(chatter_messages): # use thinker model without sending `ToolMessage`s
                     if hasattr(chunk, 'content'):
                         full_response += chunk.content
                         message_placeholder.markdown(full_response + "▌")
