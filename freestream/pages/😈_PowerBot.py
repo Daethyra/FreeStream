@@ -7,6 +7,7 @@ from langchain.agents import create_agent
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_deepseek import ChatDeepSeek
+from pages import set_bg_local, message_background_shading
 from serpapi import GoogleSearch
 
 st.set_page_config(
@@ -40,12 +41,35 @@ st.sidebar.subheader("__User Panel__")
 st.sidebar.markdown(" ### Temperature Slider")
 temperature_slider = st.sidebar.slider(
     label=""":orange[Set LLM Temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
-    min_value=0.5,
+    min_value=0.2,
     max_value=1.0,
-    value=0.7,
+    value=0.5,
     step=0.01,
     key="temperature_slider",
 )
+
+# Define a GIF toggle
+gif_bg = st.sidebar.toggle(
+    label="Custom Background",
+    value=False,
+    key="gif_background",
+    help="Turn on an experimental background.",
+)
+if gif_bg:
+    st.sidebar.file_uploader(
+        label="Upload custom background",
+        type=["jpg", "jpeg", "png", "gif", "bmp"],
+        accept_multiple_files=False,
+        key="uploaded_background",
+        help="Upload a picture to change the background of the chatbot. You may upload a JPG, PNG, or GIF.",
+    )
+    if st.session_state.uploaded_background:
+        set_bg_local(st.session_state.uploaded_background)
+    else:
+        set_bg_local("assets/62.gif")
+
+if st.sidebar.checkbox(label="deep background chat mesage"):
+    st.markdown(message_background_shading, unsafe_allow_html=True)
 
 # Button to clear conversation history
 if st.sidebar.button("Clear message history", use_container_width=True):
@@ -65,10 +89,10 @@ for message in st.session_state.messages:
 
 if DEEPSEEK_API_KEY:
     thinker_model = ChatDeepSeek(
-    temperature=0.1,  # Low temperature for logical thinking
+    temperature=0.01,  # Low temperature for logical thinking
     api_key=DEEPSEEK_API_KEY,
     model="deepseek-chat",
-    #max_tokens=256,
+    max_tokens=8192,
     streaming=False
     )
 
@@ -76,7 +100,7 @@ if DEEPSEEK_API_KEY:
     temperature=temperature_slider,  # Higher temperature for creative responses
     api_key=DEEPSEEK_API_KEY,
     model="deepseek-chat",
-    #max_tokens=512,
+    max_tokens=8192,
     streaming=True
     )
 
@@ -248,3 +272,5 @@ if user_input := st.chat_input("type here<3"):
                 st.session_state.messages.append({"role": "assistant", "content": error_msg})
     else:
         st.error("Please enter your DeepSeek API key in the sidebar.")
+
+# st.write(st.session_state.messages)

@@ -37,3 +37,16 @@ a:hover, a:active {
 <p>Developed with ❤ by <a href="https://www.linkedin.com/in/daethyra-carino/" target="_blank">Daethyra</a>.</p>
 </div>
 """
+
+message_background_shading = """
+<style>
+/* Target the main chat message container - now semi-transparent */
+div[data-testid="stChatMessage"] {
+    background-color: rgba(26, 26, 26, 0.7) !important; /* Added alpha channel for transparency */
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+    border-left: 4px solid rgba(76, 175, 80, 0.8); /* Semi-transparent green */
+    backdrop-filter: blur(5px); /* Adds frosted glass effect */
+}
+"""

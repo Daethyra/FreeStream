@@ -3,6 +3,7 @@ from .utils import (
     RetrieveDocuments,
     StreamHandler,
     footer,
+    message_background_shading,
     set_llm,
     set_bg_url,
     set_bg_local,
