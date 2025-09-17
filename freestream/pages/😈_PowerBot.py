@@ -7,7 +7,7 @@ from langchain.agents import create_agent
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_deepseek import ChatDeepSeek
-from pages import set_bg_local, message_background_shading
+from pages import set_bg_local, message_background_shading, search_chat_history, calculate, clock
 from serpapi import GoogleSearch
 
 st.set_page_config(
@@ -37,6 +37,11 @@ os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
 
 # Sidebar
 st.sidebar.subheader("__User Panel__")
+
+# Button to clear conversation history
+if st.sidebar.button("Clear message history", width="stretch"):
+    st.session_state.clear()
+
 # Add the sidebar temperature slider
 st.sidebar.markdown(" ### Temperature Slider")
 temperature_slider = st.sidebar.slider(
@@ -68,12 +73,8 @@ if gif_bg:
     else:
         set_bg_local("assets/62.gif")
 
-if st.sidebar.checkbox(label="deep background chat mesage"):
-    st.markdown(message_background_shading, unsafe_allow_html=True)
-
-# Button to clear conversation history
-if st.sidebar.button("Clear message history", use_container_width=True):
-    st.session_state.clear()
+    if st.sidebar.checkbox(label="Message Shading"):
+        st.markdown(message_background_shading, unsafe_allow_html=True)
 
 # Initialize session state for messages and thoughts
 if "messages" not in st.session_state:
@@ -89,19 +90,18 @@ for message in st.session_state.messages:
 
 if DEEPSEEK_API_KEY:
     thinker_model = ChatDeepSeek(
-    temperature=0.01,  # Low temperature for logical thinking
+    temperature=temperature_slider,  # High(er) temperature for creativity
     api_key=DEEPSEEK_API_KEY,
     model="deepseek-reasoner",
     max_tokens=8192,
-    #streaming=False
     )
 
+    # Because deepseek-reasoner cannot use tools, we use the chat model for our agent
     chatter_model = ChatDeepSeek(
-    temperature=temperature_slider,  # Higher temperature for creative responses
+    temperature=0.01,  # Low temperature for straightforward decision making
     api_key=DEEPSEEK_API_KEY,
     model="deepseek-chat",
     max_tokens=8192,
-    streaming=True
     )
 
     # First, create the output formatting function
@@ -124,7 +124,7 @@ if DEEPSEEK_API_KEY:
     # Define the tool using the langchain decorator
     @tool
     def get_weather(location: str) -> str:
-        """Get current weather information for a specific location.
+        """Get current weather information for a specific location. Expects a location, and "weather" is always appended to the query.
         Example: "portland oregon", "new york", "london uk"
         """
         try:
@@ -173,42 +173,11 @@ if DEEPSEEK_API_KEY:
         except Exception as e:
             return f"Error fetching weather data: {str(e)}"
 
-    @tool
-    def clock():
-        """Get the datetime. Returns datetime.now().strftime("%Y-%m-%d %I:%M %p")"""    
-        return datetime.now().strftime("%Y-%m-%d %I:%M %p")
-
-    @tool
-    def calculate(expression: str) -> str:
-        """Evaluate a mathematical expression. You can use basic operators (+, -, *, /, ^) and functions like sqrt, sin, cos, etc.
-        Example expressions: 
-        - "2 + 3 * 4" 
-        - "sqrt(16)" 
-        - "sin(30) + cos(60)"
-        """
-        try:
-            # Replace ^ with ** for exponentiation
-            expression = expression.replace('^', '**')
-            
-            # Add math functions to the evaluation context
-            safe_dict = {
-                'abs': abs, 'round': round, 'min': min, 'max': max,
-                'sqrt': math.sqrt, 'sin': math.sin, 'cos': math.cos, 
-                'tan': math.tan, 'log': math.log, 'log10': math.log10,
-                'pi': math.pi, 'e': math.e
-            }
-            
-            # Evaluate the expression safely
-            result = eval(expression, {"__builtins__": None}, safe_dict)
-            return f"The result of {expression} is {result}"
-        except Exception as e:
-            return f"Error evaluating expression: {str(e)}"
-
     # Create agent with tools and memory
     agent = create_agent(
         chatter_model,
-        tools=[get_weather, web_search, clock, calculate],
-        prompt=SystemMessage(content="You are assisting the user with whatever they need. Use your tools as necessary to complete assigned tasks and answer user questions.")
+        tools=[get_weather, web_search, clock, calculate, search_chat_history],
+        prompt=SystemMessage(content="You are preparing information for another AI assistant. Use your tools as necessary to complete assigned tasks and address user question(s).")
     )
 
 # Handle user input
@@ -257,7 +226,7 @@ if user_input := st.chat_input("type here<3"):
             
             # Stream the response from chatter model
             try:
-                for chunk in thinker_model.stream(chatter_messages): # use thinker model without sending `ToolMessage`s
+                for chunk in thinker_model.stream(chatter_messages):
                     if hasattr(chunk, 'content'):
                         full_response += chunk.content
                         message_placeholder.markdown(full_response + "▌")

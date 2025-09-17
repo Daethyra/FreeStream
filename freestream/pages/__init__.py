@@ -1,16 +1,11 @@
 from .utils import (
-    PrintRetrievalHandler,
-    RetrieveDocuments,
-    StreamHandler,
     footer,
     message_background_shading,
-    set_llm,
-    set_bg_url,
     set_bg_local,
-    save_conversation_history,
     format_weather_data,
     get_weather,
     web_search,
     clock,
     calculate,
+    search_chat_history
 )
