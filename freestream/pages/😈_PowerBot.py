@@ -30,7 +30,7 @@ if st.sidebar.button("Clear message history", width="stretch"):
 
 # Checkbox to activate Reasoner in place of Chatter
 st.sidebar.toggle(
-    label="Reasoner",
+    label="DeepSeek-Reasoner",
     key="use_reasoner",
     help="Toggle ON to use DeepSeek-Reasoner for the final *streamed* output. Otherwise, use DeepSeek-Chat."
 )
