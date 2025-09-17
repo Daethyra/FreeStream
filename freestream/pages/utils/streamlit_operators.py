@@ -1,7 +1,9 @@
 import base64
+import os
 from typing import Any, List, Union
 
 import streamlit as st
+
 
 # Define a function to change the background to an image via URL
 # https://discuss.streamlit.io/t/how-do-i-use-a-background-image-on-streamlit/5067/19
@@ -99,3 +101,66 @@ def save_conversation_history(conversation_history: List[Any]) -> str:
             formatted_history += f"Assistant: {msg.content}\n\n"
 
     return formatted_history
+
+@st.cache_data
+def env_loader(persist=False):
+    with st.sidebar:
+
+        # Check LANGSMITH_TRACING
+        if hasattr(st.secrets, 'LANGSMITH') and hasattr(st.secrets.LANGSMITH, 'LANGSMITH_TRACING'):
+            os.environ["LANGSMITH_TRACING"] = st.secrets.LANGSMITH.LANGSMITH_TRACING
+        else:
+            user_input = st.text_input("LangSmith Tracing (true/false)", value="true")
+            if user_input:
+                os.environ["LANGSMITH_TRACING"] = user_input
+
+        # Check LANGSMITH_PROJECT
+        if hasattr(st.secrets, 'LANGSMITH') and hasattr(st.secrets.LANGSMITH, 'LANGSMITH_PROJECT'):
+            os.environ["LANGSMITH_PROJECT"] = st.secrets.LANGSMITH.LANGSMITH_PROJECT
+        else:
+            user_input = st.text_input("LangSmith Project Name", value="FreeStream")
+            if user_input:
+                os.environ["LANGSMITH_PROJECT"] = user_input
+
+        # Check LANGSMITH_ENDPOINT
+        if hasattr(st.secrets, 'LANGSMITH') and hasattr(st.secrets.LANGSMITH, 'LANGSMITH_ENDPOINT'):
+            os.environ["LANGSMITH_ENDPOINT"] = st.secrets.LANGSMITH.LANGSMITH_ENDPOINT
+        else:
+            user_input = st.text_input("LangSmith Endpoint", type="password")
+            if user_input:
+                os.environ["LANGSMITH_ENDPOINT"] = user_input
+
+        # Check LANGSMITH_API_KEY
+        if hasattr(st.secrets, 'LANGSMITH') and hasattr(st.secrets.LANGSMITH, 'LANGSMITH_API_KEY'):
+            os.environ["LANGSMITH_API_KEY"] = st.secrets.LANGSMITH.LANGSMITH_API_KEY
+        else:
+            user_input = st.text_input("LangSmith API Key", type="password")
+            if user_input:
+                os.environ["LANGSMITH_API_KEY"] = user_input
+
+        # Check DEEPSEEK_API_KEY
+        if hasattr(st.secrets, 'DEEPSEEK') and hasattr(st.secrets.DEEPSEEK, 'DEEPSEEK_API_KEY'):
+            os.environ["DEEPSEEK_API_KEY"] = st.secrets.DEEPSEEK.DEEPSEEK_API_KEY
+        else:
+            user_input = st.text_input("DeepSeek API Key", type="password")
+            if user_input:
+                os.environ["DEEPSEEK_API_KEY"] = user_input
+
+        # Check SERPAPI_KEY
+        if hasattr(st.secrets, 'SERPAPI') and hasattr(st.secrets.SERPAPI, 'SERPAPI_KEY'):
+            os.environ["SERPAPI_KEY"] = st.secrets.SERPAPI.SERPAPI_KEY
+        else:
+            user_input = st.text_input("Serp API Key", type="password")
+            if user_input:
+                os.environ["SERPAPI_KEY"] = user_input
+
+    # # Display current environment status for debugging
+    # st.write("Environment variables set:")
+    # for key in ["LANGSMITH_TRACING", "LANGSMITH_PROJECT", "LANGSMITH_ENDPOINT", 
+    #             "LANGSMITH_API_KEY", "DEEPSEEK_API_KEY", "SERPAPI_KEY"]:
+    #     if key in os.environ:
+    #         # Mask sensitive keys in display
+    #         display_value = '*' * len(os.environ[key]) if 'KEY' in key or 'SECRET' in key else os.environ[key]
+    #         st.write(f"- {key}: {display_value}")
+            
+# st.button(label="load env", on_click=env_loader)

@@ -7,5 +7,6 @@ from .utils import (
     web_search,
     clock,
     calculate,
-    search_chat_history
+    search_chat_history,
+    env_loader
 )
