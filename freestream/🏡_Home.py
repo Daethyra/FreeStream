@@ -41,7 +41,7 @@ with st.expander(label=":violet[Toolkit:]", expanded=False):
         """
         1. Get Weather: Serp API query to "google_ai_mode" using `f"{location} weather"`.
         
-        2. Web Search: Serp API query to "google_ai_mode" using f"{query}".
+        2. Web Search: Serp API query to "google_ai_mode" using `f"{query}`".
         
         3. Clock: Returns `datetime.now().strftime("%Y-%m-%d %I:%M %p")`
         
@@ -80,4 +80,3 @@ st.sidebar.markdown(
     * **[FreeStream's GitHub Repository](https://github.com/Daethyra/FreeStream)**
     """
 )
-st.divider()

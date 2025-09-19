@@ -7,6 +7,7 @@ from langchain.agents import create_agent
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_deepseek import ChatDeepSeek
+from pages import set_bg_local, message_background_shading, search_chat_history, calculate, clock, env_loader
 from serpapi import GoogleSearch
 
 st.set_page_config(
@@ -17,39 +18,56 @@ st.set_page_config(
 st.title("FreeStream")
 st.header(":green[_PowerBot has a toolkit and reasons before responding_]", divider="red")
 
-# Check for DeepSeek API Key before continuing
-if "DEEPSEEK_API_KEY" in st.secrets.DEEPSEEK:
-    DEEPSEEK_API_KEY = st.secrets.DEEPSEEK.DEEPSEEK_API_KEY
-else:
-    DEEPSEEK_API_KEY = st.sidebar.text_input("DeepSeek API Key", type="password")
-
-if "SERPAPI_KEY" in st.secrets.SERPAPI:
-    SERPAPI_KEY = st.secrets.SERPAPI.SERPAPI_KEY
-else:
-    SERPAPI_KEY = st.sidebar.text_input("Serp API Key", type="password")
-
-# Initialize LangSmith tracing
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = "FreeStream"
-os.environ["LANGCHAIN_ENDPOINT"] = st.secrets.LANGCHAIN.LANGCHAIN_ENDPOINT
-os.environ["LANGCHAIN_API_KEY"] = st.secrets.LANGCHAIN.LANGCHAIN_API_KEY
+# Check for API keys and environment variables
+env_loader()
 
 # Sidebar
 st.sidebar.subheader("__User Panel__")
+
+# Button to clear conversation history
+if st.sidebar.button("Clear message history", width="stretch"):
+    st.session_state.clear()
+
+# Checkbox to activate Reasoner in place of Chatter
+st.sidebar.toggle(
+    label="DeepSeek-Reasoner",
+    key="use_reasoner",
+    help="Toggle ON to use DeepSeek-Reasoner for the final *streamed* output. Otherwise, use DeepSeek-Chat."
+)
+
 # Add the sidebar temperature slider
 st.sidebar.markdown(" ### Temperature Slider")
 temperature_slider = st.sidebar.slider(
-    label=""":orange[Set LLM Temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
-    min_value=0.5,
+    label=""":orange[Set chosen LLM(reasoner/chat) temperature]. The :blue[lower] the temperature, the :blue[less] random the model will be. The :blue[higher] the temperature, the :blue[more] random the model will be.""",
+    min_value=0.2,
     max_value=1.0,
-    value=0.7,
+    value=0.5,
     step=0.01,
     key="temperature_slider",
 )
 
-# Button to clear conversation history
-if st.sidebar.button("Clear message history", use_container_width=True):
-    st.session_state.clear()
+# Define a GIF toggle
+gif_bg = st.sidebar.toggle(
+    label="Custom Background",
+    value=False,
+    key="gif_background",
+    help="Turn on an experimental background.",
+)
+if gif_bg:
+    st.sidebar.file_uploader(
+        label="Upload custom background",
+        type=["jpg", "jpeg", "png", "gif", "bmp"],
+        accept_multiple_files=False,
+        key="uploaded_background",
+        help="Upload a picture to change the background of the chatbot. You may upload a JPG, PNG, or GIF.",
+    )
+    if st.session_state.uploaded_background:
+        set_bg_local(st.session_state.uploaded_background)
+    else:
+        set_bg_local("assets/62.gif")
+
+    if st.sidebar.checkbox(label="Message Shading"):
+        st.markdown(message_background_shading, unsafe_allow_html=True)
 
 # Initialize session state for messages and thoughts
 if "messages" not in st.session_state:
@@ -63,21 +81,29 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-if DEEPSEEK_API_KEY:
-    thinker_model = ChatDeepSeek(
-    temperature=0.1,  # Low temperature for logical thinking
-    api_key=DEEPSEEK_API_KEY,
-    model="deepseek-chat",
-    #max_tokens=256,
-    streaming=False
+if st.secrets.DEEPSEEK.DEEPSEEK_API_KEY:
+    # Response model
+    reasoner_model = ChatDeepSeek(
+    temperature=temperature_slider,  # High(er) temperature for creativity
+    api_key=st.secrets.DEEPSEEK.DEEPSEEK_API_KEY,
+    model="deepseek-reasoner",
+    max_tokens=8192,
     )
 
+    # Response model
     chatter_model = ChatDeepSeek(
-    temperature=temperature_slider,  # Higher temperature for creative responses
-    api_key=DEEPSEEK_API_KEY,
+    temperature=temperature_slider,  # High(er) temperature for creativity
+    api_key=st.secrets.DEEPSEEK.DEEPSEEK_API_KEY,
     model="deepseek-chat",
-    #max_tokens=512,
-    streaming=True
+    max_tokens=8192,
+    )
+    # Agent model
+    # Because deepseek-reasoner cannot use tools, we use the "deepseek-chat" model for our agent
+    agent_model = ChatDeepSeek(
+    temperature=0.01,  # Low temperature for straightforward decision making
+    api_key=st.secrets.DEEPSEEK.DEEPSEEK_API_KEY,
+    model="deepseek-chat",
+    max_tokens=8192,
     )
 
     # First, create the output formatting function
@@ -100,14 +126,14 @@ if DEEPSEEK_API_KEY:
     # Define the tool using the langchain decorator
     @tool
     def get_weather(location: str) -> str:
-        """Get current weather information for a specific location.
+        """Get current weather information for a specific location. Expects a location, and "weather" is always appended to the query.
         Example: "portland oregon", "new york", "london uk"
         """
         try:
             params = {
                 "engine": "google_ai_mode",
                 "q": f"{location} weather",
-                "api_key": SERPAPI_KEY,
+                "api_key": st.secrets.SERPAPI.SERPAPI_KEY,
                 "location": "Portland, OR"
             }
             
@@ -132,7 +158,7 @@ if DEEPSEEK_API_KEY:
             params = {
                 "engine": "google_ai_mode",
                 "q": f"{query}",
-                "api_key": SERPAPI_KEY,
+                "api_key": st.secrets.SERPAPI.SERPAPI_KEY,
                 "location": "Portland, OR"
             }
             
@@ -149,42 +175,11 @@ if DEEPSEEK_API_KEY:
         except Exception as e:
             return f"Error fetching weather data: {str(e)}"
 
-    @tool
-    def clock():
-        """Get the datetime. Returns datetime.now().strftime("%Y-%m-%d %I:%M %p")"""    
-        return datetime.now().strftime("%Y-%m-%d %I:%M %p")
-
-    @tool
-    def calculate(expression: str) -> str:
-        """Evaluate a mathematical expression. You can use basic operators (+, -, *, /, ^) and functions like sqrt, sin, cos, etc.
-        Example expressions: 
-        - "2 + 3 * 4" 
-        - "sqrt(16)" 
-        - "sin(30) + cos(60)"
-        """
-        try:
-            # Replace ^ with ** for exponentiation
-            expression = expression.replace('^', '**')
-            
-            # Add math functions to the evaluation context
-            safe_dict = {
-                'abs': abs, 'round': round, 'min': min, 'max': max,
-                'sqrt': math.sqrt, 'sin': math.sin, 'cos': math.cos, 
-                'tan': math.tan, 'log': math.log, 'log10': math.log10,
-                'pi': math.pi, 'e': math.e
-            }
-            
-            # Evaluate the expression safely
-            result = eval(expression, {"__builtins__": None}, safe_dict)
-            return f"The result of {expression} is {result}"
-        except Exception as e:
-            return f"Error evaluating expression: {str(e)}"
-
     # Create agent with tools and memory
     agent = create_agent(
-        chatter_model,
-        tools=[get_weather, web_search, clock, calculate],
-        prompt=SystemMessage(content="You are assisting the user with whatever they need. Use your tools as necessary to complete assigned tasks and answer user questions.")
+        agent_model,
+        tools=[get_weather, web_search, clock, calculate, search_chat_history],
+        prompt=SystemMessage(content="You are preparing information for another AI assistant. Use your tools as necessary to complete assigned tasks and address user question(s).")
     )
 
 # Handle user input
@@ -195,7 +190,7 @@ if user_input := st.chat_input("type here<3"):
     # Add user message to history
     st.session_state.messages.append({"role": "user", "content": user_input})
     
-    if DEEPSEEK_API_KEY:
+    if st.secrets.DEEPSEEK.DEEPSEEK_API_KEY:
         # Convert messages to LangChain format
         lc_messages = []
         for msg in st.session_state.messages:
@@ -204,19 +199,19 @@ if user_input := st.chat_input("type here<3"):
             elif msg["role"] == "assistant":
                 lc_messages.append(AIMessage(content=msg["content"]))
         
-        # Step 1: Thinker phase - generate reasoning
-        with st.chat_message("thinker"):
-            thinker_placeholder = st.empty()
-            thinker_placeholder.markdown("🤔 Thinking...")
+        # Step 1: Agent phase - generate reasoning
+        with st.chat_message("agent"):
+            agent_placeholder = st.empty()
+            agent_placeholder.markdown("🤔 Thinking...")
             
             try:
-                thinker_response = agent.invoke({"messages": lc_messages})
-                reasoning = thinker_response["messages"][-1].content
-                thinker_placeholder.markdown(f"🤔 Finished Thinking: {reasoning}")
+                agent_response = agent.invoke({"messages": lc_messages})
+                reasoning = agent_response["messages"][-1].content
+                agent_placeholder.markdown(f"🤔 Finished Thinking: {reasoning}")
                 st.session_state.thoughts.append(reasoning)
             except Exception as e:
                 error_msg = f"Error in thinking process: {str(e)}"
-                thinker_placeholder.markdown(f"❌ {error_msg}")
+                agent_placeholder.markdown(f"❌ {error_msg}")
                 st.session_state.thoughts.append(error_msg)
                 reasoning = "I encountered an error while processing your request."
         
@@ -231,9 +226,15 @@ if user_input := st.chat_input("type here<3"):
                 *lc_messages
             ]
             
-            # Stream the response from chatter model
+            # Select model based on `st.session_state.use_reasoner`
+            if st.session_state.use_reasoner:
+                generative_model = reasoner_model
+            else:
+                generative_model = chatter_model
+            
+            # Attempt streaming response
             try:
-                for chunk in chatter_model.stream(chatter_messages):
+                for chunk in generative_model.stream(chatter_messages):
                     if hasattr(chunk, 'content'):
                         full_response += chunk.content
                         message_placeholder.markdown(full_response + "▌")
@@ -248,3 +249,5 @@ if user_input := st.chat_input("type here<3"):
                 st.session_state.messages.append({"role": "assistant", "content": error_msg})
     else:
         st.error("Please enter your DeepSeek API key in the sidebar.")
+
+# st.write(st.session_state.messages)
