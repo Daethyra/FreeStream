@@ -11,7 +11,7 @@ license = "GNU AGPL"
 python = ">=3.10,<3.13"
 
 langchain = "1.0.0a5"
-streamlit = "^1.49.1"
+streamlit = "^1.50.0"
 opencv-python-headless = "^4.12.0.88"
 langchain-community = "^0.3.29"
 langchain-deepseek = "^0.1.4"
