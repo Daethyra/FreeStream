@@ -10,7 +10,7 @@ license = "GNU AGPL"
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 
-langchain = "1.0.0a5"
+langchain = "1.0.0a9"
 streamlit = "^1.49.1"
 opencv-python-headless = "^4.12.0.88"
 langchain-community = "^0.3.29"
