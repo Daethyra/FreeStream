@@ -15,7 +15,7 @@ streamlit = "^1.49.1"
 opencv-python-headless = "^4.12.0.88"
 langchain-community = "^0.3.29"
 langchain-deepseek = "^0.1.4"
-langgraph = "^0.6.7"
+langgraph = "^1.0.1"
 google-search-results = "^2.4.2"
 
 [tool.poetry.group.dev.dependencies]
